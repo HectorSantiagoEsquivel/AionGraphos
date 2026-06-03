@@ -11,6 +11,7 @@ import org.aioncyclus.aiongraphos.domain.calculator.HousesCalculator
 import org.aioncyclus.aiongraphos.domain.calculator.PlanetCalculator
 import org.aioncyclus.aiongraphos.domain.model.chart.AnalysedChart
 import org.aioncyclus.aiongraphos.domain.model.chart.ChartContext
+import org.aioncyclus.aiongraphos.domain.model.dignity.DignitySystem
 import org.aioncyclus.aiongraphos.domain.model.house.HouseSystem
 import org.aioncyclus.aiongraphos.domain.model.house.HouseSystem.PLACIDUS
 import org.aioncyclus.aiongraphos.domain.model.lot.LotType
@@ -31,11 +32,13 @@ class ChartService(
     fun calculateAnalysedChart(planets:List<Planet>,
                                lots:List<LotType>,
                                chartContext: ChartContext,
+                               dignitySystem: DignitySystem,
                                houseSystem: HouseSystem=PLACIDUS
+
     ): AnalysedChart
     {
         val astroChart= chartCalculator.calculate(planets,chartContext,houseSystem)
-        val chartAnalysis= chartAnalyser.analyse(astroChart,lots)
+        val chartAnalysis= chartAnalyser.analyse(astroChart,lots,dignitySystem)
         return AnalysedChart(astroChart,chartAnalysis)
     }
 

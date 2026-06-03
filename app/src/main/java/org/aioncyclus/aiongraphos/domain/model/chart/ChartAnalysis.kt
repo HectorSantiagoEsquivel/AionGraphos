@@ -6,4 +6,5 @@ import org.aioncyclus.aiongraphos.domain.model.lot.LotData
 data class ChartAnalysis(
     val aspects: List<Aspect>,
     val lots: List<LotData>,
+    val sect: Sect
 )

@@ -11,7 +11,7 @@ class AspectCalculator{
     {
         val aspects=mutableListOf<Aspect>()
 
-        planetaryData.indices
+        //planetaryData.indices
         for(i in planetaryData.indices)
         {
             for(j in i+1 until planetaryData.size)
@@ -49,10 +49,6 @@ class AspectCalculator{
             }
             if(aspectOrb<= aspectType.defaultOrb)
             {
-                println("DEBUG distance = $distance")
-                println("DEBUG angle = ${aspectType.angle}")
-                println("DEBUG orb = ${aspectType.defaultOrb}")
-                println("DEBUG orb * 60 = ${aspectOrb * 60}")
                 return Aspect(
                     planetDataA.planet,
                     planetDataB.planet,

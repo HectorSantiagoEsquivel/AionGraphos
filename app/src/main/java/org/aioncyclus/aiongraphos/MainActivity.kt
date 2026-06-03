@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.aioncyclus.aiongraphos.domain.model.chart.AnalysedChart
+import org.aioncyclus.aiongraphos.domain.model.dignity.TraditionalDignities
 import org.aioncyclus.aiongraphos.domain.model.lot.LotType
 
 
@@ -53,10 +54,15 @@ class MainActivity : ComponentActivity() {
         val chartService=ChartService(this)
         val planets=listOf<Planet>(MOON,MERCURY,VENUS,SUN,MARS,JUPITER,SATURN,URANUS,NEPTUNE,PLUTO)
         val lots=listOf<LotType>(LotType.Fortune, LotType.Spirit, LotType.Eros, LotType.Exaltation)
+        val dignitySystem= TraditionalDignities()
 
         val chartContext= ChartContext(Instant.now(),ZoneId.of("America/Argentina/Buenos_Aires"),-34.0,-58.0)
 
-        val analysedChart=chartService.calculateAnalysedChart(planets,lots,chartContext)
+        val analysedChart=chartService.calculateAnalysedChart(
+            planets,
+            lots,
+            chartContext,
+            dignitySystem)
 
 
         setContent {
@@ -105,7 +111,9 @@ fun ChartDebugScreen(chart: AnalysedChart) {
                         text = "${planet.planet.planetName}: " +
                                 "${planet.zodiacPosition.degreeInSign}°" +
                                 "${planet.zodiacPosition.minuteInDegree}' " +
-                                "${planet.zodiacPosition.sign.signName}",
+                                "${planet.zodiacPosition.sign.signName}"+
+                                "in the ${planet.zodiacPosition.decan.number} decan"+
+                                "ruled by ${planet.zodiacPosition.decan.ruler.planetName}",
                         modifier = Modifier.padding(vertical = 4.dp)
                     )
                 }
