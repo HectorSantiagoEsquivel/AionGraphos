@@ -10,10 +10,10 @@ A work-in-progress Android astrology engine written in Kotlin.
 - Aspect detection
 - Arabic Lots calculation
 - Domain-driven architecture
+- Essential and accidental dignities
 
 ## Planned Features
 
-- Essential dignities
 - Geolocation support
 - Jetpack Compose UI
 - Chart rendering
