@@ -3,7 +3,8 @@ package org.aioncyclus.aiongraphos.domain.analyst
 import org.aioncyclus.aiongraphos.domain.model.chart.AstroChart
 import org.aioncyclus.aiongraphos.domain.model.chart.Sect
 import org.aioncyclus.aiongraphos.domain.model.planet.Planet
-
+//TODO:
+// - This class could be an object
 class SectCalculator
 {
     fun determine(astroChart: AstroChart): Sect {

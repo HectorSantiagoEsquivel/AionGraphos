@@ -53,9 +53,6 @@ sealed class LotType(
             LotPoint.BaseLot(Fortune),
             LotPoint.PlanetPoint(Planet.SATURN)),
     )
-
-
-
 }
 
 data class LotFormula(

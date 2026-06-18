@@ -7,7 +7,8 @@ import org.aioncyclus.aiongraphos.domain.model.lot.LotData
 import org.aioncyclus.aiongraphos.domain.model.lot.LotPoint
 import org.aioncyclus.aiongraphos.domain.model.lot.LotType
 
-
+//TODO:
+// - This class could be an object
 class LotCalculator
 {
     fun calculateLots(astroChart: AstroChart,chartSect: Sect, lots: List<LotType>): List<LotData>

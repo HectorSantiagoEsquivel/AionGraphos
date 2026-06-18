@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.aioncyclus.aiongraphos.domain.calculator.ZodiacMapper
 import org.aioncyclus.aiongraphos.domain.model.chart.AnalysedChart
 import org.aioncyclus.aiongraphos.domain.model.dignity.TraditionalDignities
 import org.aioncyclus.aiongraphos.domain.model.lot.LotType
@@ -56,7 +57,7 @@ class MainActivity : ComponentActivity() {
         val lots=listOf<LotType>(LotType.Fortune, LotType.Spirit, LotType.Eros, LotType.Exaltation)
         val dignitySystem= TraditionalDignities()
 
-        val chartContext= ChartContext(Instant.now(),ZoneId.of("America/Argentina/Buenos_Aires"),-34.0,-58.0)
+        val chartContext= ChartContext(Instant.parse("2026-05-17T18:25:00Z"),ZoneId.of("America/Argentina/Buenos_Aires"),-34.0,-58.0)
 
         val analysedChart=chartService.calculateAnalysedChart(
             planets,
@@ -112,7 +113,7 @@ fun ChartDebugScreen(chart: AnalysedChart) {
                                 "${planet.zodiacPosition.degreeInSign}°" +
                                 "${planet.zodiacPosition.minuteInDegree}' " +
                                 "${planet.zodiacPosition.sign.signName}"+
-                                "in the ${planet.zodiacPosition.decan.number} decan"+
+                                "in the ${HousesCalculator.locateHouseOf(planet.planetPosition.longitude,chart.chart.housesData).number} house"+
                                 "ruled by ${planet.zodiacPosition.decan.ruler.planetName}",
                         modifier = Modifier.padding(vertical = 4.dp)
                     )
@@ -121,11 +122,43 @@ fun ChartDebugScreen(chart: AnalysedChart) {
         }
 
 
+
         HorizontalDivider(
             modifier = Modifier.padding(vertical = 8.dp),
             color = MaterialTheme.colorScheme.outline
         )
 
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            Text(
+                text = "Nodos",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+
+            LazyColumn {
+                items(chart.chart.nodeData) { node ->
+                    Text(
+                        text = "${node.planet.planetName}: " +
+                                "${node.zodiacPosition.degreeInSign}°" +
+                                "${node.zodiacPosition.minuteInDegree}' " +
+                                "${node.zodiacPosition.sign.signName}"+
+                                "in the ${HousesCalculator.locateHouseOf(node.planetPosition.longitude,chart.chart.housesData).number} house"+
+                                "ruled by ${node.zodiacPosition.decan.ruler.planetName}",
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                }
+            }
+        }
+
+        HorizontalDivider(
+            modifier = Modifier.padding(vertical = 8.dp),
+            color = MaterialTheme.colorScheme.outline
+        )
 
         Column(
             modifier = Modifier
@@ -203,6 +236,33 @@ fun ChartDebugScreen(chart: AnalysedChart) {
                                 "between ${aspect.planetA.planetName} " +
                                 "and ${aspect.planetB.planetName}' " +
                                 "with an orb of ${aspect.separation.degree}° ${aspect.separation.minute}'",
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                }
+            }
+        }
+
+        HorizontalDivider(
+            modifier = Modifier.padding(vertical = 8.dp),
+            color = MaterialTheme.colorScheme.outline
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            Text(
+                text = "Dignidades Esenciales",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            LazyColumn {
+                items(chart.analysis.conditions) { condition ->
+                    Text(
+                        text = "${condition.planet}: " +
+                                "${condition.score}",
                         modifier = Modifier.padding(vertical = 4.dp)
                     )
                 }

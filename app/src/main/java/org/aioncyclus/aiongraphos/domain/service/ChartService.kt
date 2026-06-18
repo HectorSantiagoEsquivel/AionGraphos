@@ -33,11 +33,12 @@ class ChartService(
                                lots:List<LotType>,
                                chartContext: ChartContext,
                                dignitySystem: DignitySystem,
+                               node:Planet= Planet.MEAN_NORTH_NODE,
                                houseSystem: HouseSystem=PLACIDUS
 
     ): AnalysedChart
     {
-        val astroChart= chartCalculator.calculate(planets,chartContext,houseSystem)
+        val astroChart= chartCalculator.calculate(planets,chartContext,node,houseSystem)
         val chartAnalysis= chartAnalyser.analyse(astroChart,lots,dignitySystem)
         return AnalysedChart(astroChart,chartAnalysis)
     }

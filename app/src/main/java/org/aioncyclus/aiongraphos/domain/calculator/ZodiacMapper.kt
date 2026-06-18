@@ -21,7 +21,7 @@ object ZodiacMapper
         return ZodiacPosition(sign,degreeInSign,minuteInSign,decan)
     }
 
-    private fun normaliseLongitude(longitude: Double): Double {
+    fun normaliseLongitude(longitude: Double): Double {
         return ((longitude % 360) + 360) % 360
     }
 
@@ -61,6 +61,6 @@ object ZodiacMapper
         val minute = ((absoluteValue  - degree) * 60.0)
             .roundToInt()
 
-        return Distance(degree, minute)
+        return Distance(degree, minute, absoluteValue)
     }
 }

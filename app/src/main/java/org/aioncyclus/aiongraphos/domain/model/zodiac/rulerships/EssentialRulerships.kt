@@ -1,3 +1,8 @@
 package org.aioncyclus.aiongraphos.domain.model.zodiac.rulerships
 
-data class EssentialRulerships()
+import org.aioncyclus.aiongraphos.domain.model.zodiac.Sign
+
+data class EssentialRulerships(
+    val domiciles: List<Sign>,
+    val exaltation: Sign?
+)

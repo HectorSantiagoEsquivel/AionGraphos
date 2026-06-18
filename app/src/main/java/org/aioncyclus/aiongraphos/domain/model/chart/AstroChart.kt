@@ -6,6 +6,7 @@ import org.aioncyclus.aiongraphos.domain.model.planet.PlanetData
 
 data class AstroChart(
     val planetaryData: List<PlanetData>,
+    val nodeData: List <PlanetData>,
     val housesData: HousesData,
     val chartContext: ChartContext
 ){

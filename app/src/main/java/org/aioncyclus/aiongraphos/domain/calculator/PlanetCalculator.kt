@@ -17,4 +17,31 @@ class PlanetCalculator(
         return PlanetData(planet,planetPosition,zodiacPosition,isRetrograde)
     }
 
+    fun calculateNodeData(node:Planet,contextDate: Instant=Instant.now()): List<PlanetData>
+    {
+        val northNodePosition=engine.calculatePlanetPosition(node,contextDate)
+        val southNodePosition = northNodePosition.copy(
+            longitude = ZodiacMapper.normaliseLongitude(
+                northNodePosition.longitude + 180
+            )
+        )
+
+        val northZodiacPosition= ZodiacMapper.fromLongitude(northNodePosition.longitude)
+        val southZodiacPosition= ZodiacMapper.fromLongitude(southNodePosition.longitude)
+
+        val isRetrograde=northNodePosition.speedLongitude<0
+
+        val southNode = when(node) {
+            Planet.MEAN_NORTH_NODE -> Planet.MEAN_SOUTH_NODE
+            Planet.TRUE_NORTH_NODE -> Planet.TRUE_SOUTH_NODE
+            else -> throw IllegalArgumentException(
+                "calculateNodeData expects a north node"
+            )
+        }
+
+       return listOf<PlanetData>(PlanetData(node,northNodePosition,northZodiacPosition,isRetrograde),
+           PlanetData(southNode,southNodePosition,southZodiacPosition,isRetrograde))
+
+    }
+
 }
