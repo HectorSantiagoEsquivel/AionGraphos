@@ -1,8 +1,0 @@
-package org.aioncyclus.aiongraphos.domain.model.dignity
-
-import org.aioncyclus.aiongraphos.domain.model.zodiac.Sign
-
-data class EssentialRulerships(
-    val domiciles: List<Sign>,
-    val exaltation: Sign?
-)
