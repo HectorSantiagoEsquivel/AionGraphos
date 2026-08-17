@@ -12,4 +12,6 @@ data class AstroChart(
 ){
     fun getPlanetData(planet: Planet): PlanetData =
         planetaryData.first { it.planet == planet }
+    fun getNodeDAta(node: Planet): PlanetData=
+        nodeData.first { it.planet==node }
 }

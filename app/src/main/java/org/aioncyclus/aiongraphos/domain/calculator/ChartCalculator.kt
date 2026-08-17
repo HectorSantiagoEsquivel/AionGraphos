@@ -26,8 +26,11 @@ class ChartCalculator(val planetCalculator: PlanetCalculator,
         }
         val nodeData=planetCalculator.calculateNodeData(node, chartContext.contextDate)
 
-        val housesData=housesCalculator.calculate(chartContext.latitude,chartContext.longitude,
-            chartContext.contextDate,houseSystem)
+        val housesData=housesCalculator.calculate(
+            chartContext.location.latitude,
+            chartContext.location.longitude,
+            chartContext.contextDate,
+            houseSystem)
 
         return AstroChart(planetaryData,nodeData,housesData,chartContext)
     }

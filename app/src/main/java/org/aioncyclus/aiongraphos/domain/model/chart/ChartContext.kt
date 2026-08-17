@@ -1,5 +1,6 @@
 package org.aioncyclus.aiongraphos.domain.model.chart
 
+import org.aioncyclus.aiongraphos.domain.model.location.Location
 import java.time.Instant
 import java.time.ZoneId
 
@@ -17,9 +18,9 @@ import java.time.ZoneId
  * @see java.time.Instant
  * @see java.time.ZoneId
  */
-class ChartContext(
-    val contextDate: Instant,
-    val zoneID: ZoneId,
-    val latitude: Double,
-    val longitude: Double
+
+data class ChartContext(
+    val contextDate:Instant,
+    val location: Location
 )
+

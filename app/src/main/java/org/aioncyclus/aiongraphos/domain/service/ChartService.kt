@@ -1,8 +1,6 @@
 package org.aioncyclus.aiongraphos.domain.service
 
-import android.content.Context
-import org.aioncyclus.aiongraphos.data.ephemeris.SwissEphemerisCalculator
-import org.aioncyclus.aiongraphos.data.ephemeris.SwissEphemerisProvider
+import org.aioncyclus.aiongraphos.data.ephemeris.AstroEngine
 import org.aioncyclus.aiongraphos.domain.analyst.AspectCalculator
 import org.aioncyclus.aiongraphos.domain.analyst.ChartAnalyser
 import org.aioncyclus.aiongraphos.domain.analyst.LotCalculator
@@ -18,16 +16,10 @@ import org.aioncyclus.aiongraphos.domain.model.lot.LotType
 import org.aioncyclus.aiongraphos.domain.model.planet.Planet
 
 class ChartService(
-    context: Context
+    private val chartCalculator: ChartCalculator,
+    private val chartAnalyser: ChartAnalyser
 ){
-    private val swe = SwissEphemerisProvider.loadSwissEphemeris(context)
-    private val astroEngine = SwissEphemerisCalculator(swe)
-    private val planetCalculator= PlanetCalculator(astroEngine)
-    private val housesCalculator= HousesCalculator(astroEngine)
-    private val chartCalculator= ChartCalculator(planetCalculator,housesCalculator)
-    private val aspectCalculator= AspectCalculator()
-    private val lotCalculator= LotCalculator()
-    private val chartAnalyser= ChartAnalyser(aspectCalculator,lotCalculator)
+
 
     fun calculateAnalysedChart(planets:List<Planet>,
                                lots:List<LotType>,
@@ -35,7 +27,6 @@ class ChartService(
                                dignitySystem: DignitySystem,
                                node:Planet= Planet.MEAN_NORTH_NODE,
                                houseSystem: HouseSystem=PLACIDUS
-
     ): AnalysedChart
     {
         val astroChart= chartCalculator.calculate(planets,chartContext,node,houseSystem)

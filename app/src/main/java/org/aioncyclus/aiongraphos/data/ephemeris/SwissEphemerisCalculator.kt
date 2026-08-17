@@ -36,13 +36,14 @@ class SwissEphemerisCalculator(private val swe: SwissEph): AstroEngine
             val julDay = calculateJulianDay(contextDate)
             val planetPos = DoubleArray(6)
             val serr = StringBuffer()
-            val flags = SweConst.SEFLG_SWIEPH
+            val flags = SweConst.SEFLG_SWIEPH or SweConst.SEFLG_SPEED
 
             val result = swe.swe_calc_ut(julDay, planet.seId, flags, planetPos, serr)
 
             if (result == SweConst.ERR) {
                 throw IllegalStateException("Failed to calculate position: $serr")
             }
+
 
             PlanetPosition(planetPos[0], planetPos[1], planetPos[2],
                 planetPos[3], planetPos[4], planetPos[5])

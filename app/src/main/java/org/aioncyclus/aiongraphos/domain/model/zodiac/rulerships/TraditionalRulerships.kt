@@ -45,6 +45,23 @@ object TraditionalRulerships: RulershipSystem {
         Planet.PLUTO to EssentialRulerships(
             domiciles = emptyList(),
             exaltation = null
+        ),
+        Planet.MEAN_NORTH_NODE to EssentialRulerships(
+            domiciles = emptyList(),
+            exaltation = Sign.GEMINI
+        ),
+        Planet.TRUE_NORTH_NODE to EssentialRulerships(
+            domiciles = emptyList(),
+            exaltation = Sign.GEMINI
+        ),
+        Planet.MEAN_SOUTH_NODE to EssentialRulerships(
+            domiciles = emptyList(),
+            exaltation = Sign.SAGITTARIUS
+        ),
+        Planet.TRUE_SOUTH_NODE to EssentialRulerships(
+            domiciles = emptyList(),
+            exaltation = Sign.SAGITTARIUS
         )
+
     )
 }

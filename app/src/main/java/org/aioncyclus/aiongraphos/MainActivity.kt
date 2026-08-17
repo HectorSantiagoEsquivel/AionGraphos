@@ -16,15 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
-import org.aioncyclus.aiongraphos.data.ephemeris.SwissEphemerisProvider
-import org.aioncyclus.aiongraphos.data.ephemeris.SwissEphemerisCalculator
-import org.aioncyclus.aiongraphos.domain.calculator.ChartCalculator
-import org.aioncyclus.aiongraphos.domain.model.chart.AstroChart
 
 import org.aioncyclus.aiongraphos.domain.calculator.HousesCalculator
-import org.aioncyclus.aiongraphos.domain.calculator.PlanetCalculator
-import org.aioncyclus.aiongraphos.domain.model.chart.ChartContext
-import org.aioncyclus.aiongraphos.domain.model.planet.Planet
+
 import org.aioncyclus.aiongraphos.ui.theme.AiongraphosTheme
 
 
@@ -32,47 +26,36 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Surface
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.Font
+
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.aioncyclus.aiongraphos.domain.calculator.ZodiacMapper
 import org.aioncyclus.aiongraphos.domain.model.chart.AnalysedChart
-import org.aioncyclus.aiongraphos.domain.model.dignity.TraditionalDignities
-import org.aioncyclus.aiongraphos.domain.model.lot.LotType
+
+import dagger.hilt.android.AndroidEntryPoint
 
 
-import org.aioncyclus.aiongraphos.domain.model.planet.Planet.*
-import org.aioncyclus.aiongraphos.domain.service.ChartService
-import java.time.Instant
-import java.time.ZoneId
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val chartService=ChartService(this)
-        val planets=listOf<Planet>(MOON,MERCURY,VENUS,SUN,MARS,JUPITER,SATURN,URANUS,NEPTUNE,PLUTO)
-        val lots=listOf<LotType>(LotType.Fortune, LotType.Spirit, LotType.Eros, LotType.Exaltation)
-        val dignitySystem= TraditionalDignities()
-
-        val chartContext= ChartContext(Instant.parse("2026-05-17T18:25:00Z"),ZoneId.of("America/Argentina/Buenos_Aires"),-34.0,-58.0)
-
-        val analysedChart=chartService.calculateAnalysedChart(
-            planets,
-            lots,
-            chartContext,
-            dignitySystem)
-
 
         setContent {
             AiongraphosTheme {
-                ChartDebugScreen(analysedChart)
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    AionGraphosApp()
+                }
             }
         }
     }
 }
+
 
 
 @Composable
