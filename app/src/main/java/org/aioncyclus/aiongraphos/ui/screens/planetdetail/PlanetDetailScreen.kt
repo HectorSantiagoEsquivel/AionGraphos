@@ -3,7 +3,6 @@ package org.aioncyclus.aiongraphos.ui.screens.planetdetail
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -18,10 +17,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.delay
+
 import org.aioncyclus.aiongraphos.ui.components.aspectdashboard.AspectDashboard
 import org.aioncyclus.aiongraphos.ui.mapper.*
 import org.aioncyclus.aiongraphos.ui.theme.ElementColour
@@ -54,6 +56,7 @@ private fun PortraitView(
     modifier: Modifier = Modifier
 )
 {
+
     Column(
         modifier = modifier
             .statusBarsPadding()
@@ -174,7 +177,7 @@ private fun PortraitView(
                     modifier = Modifier.weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    //CircularProgressIndicator()
                 }
             }
         }

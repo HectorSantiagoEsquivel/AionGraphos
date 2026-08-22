@@ -1,6 +1,6 @@
 package org.aioncyclus.aiongraphos.data.repository
 
-/*
+
 import org.aioncyclus.aiongraphos.data.location.LocationTracker
 import org.aioncyclus.aiongraphos.data.location.TimeZoneResolver
 import org.aioncyclus.aiongraphos.domain.model.location.Location
@@ -38,4 +38,4 @@ class LocationRepository @Inject constructor(
     }
 
     fun getCurrentLocation(): Location? = currentLocation
-}*/
+}

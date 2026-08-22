@@ -2,7 +2,7 @@ package org.aioncyclus.aiongraphos.data.location
 
 import us.dustinj.timezonemap.TimeZoneMap
 
-/*object TimeZoneResolver {
+object TimeZoneResolver {
     private val delta=1.0
 
     private var map: TimeZoneMap? = null
@@ -38,4 +38,4 @@ import us.dustinj.timezonemap.TimeZoneMap
             ?.getOverlappingTimeZone(latitude, longitude)
             ?.zoneId
     }
-}*/
+}

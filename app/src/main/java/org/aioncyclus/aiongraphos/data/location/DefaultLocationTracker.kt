@@ -11,7 +11,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 
-/*class DefaultLocationTracker @Inject constructor(
+class DefaultLocationTracker @Inject constructor(
     private val locationClient: FusedLocationProviderClient,
     private val application: Application
 ) : LocationTracker {
@@ -59,4 +59,4 @@ import javax.inject.Inject
                 }
         }
     }
-}*/
+}

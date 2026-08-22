@@ -9,7 +9,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-/*@Module
+@Module
 @InstallIn(SingletonComponent::class)
 object LocationProviderModule {
 
@@ -20,4 +20,4 @@ object LocationProviderModule {
     ): FusedLocationProviderClient {
         return LocationServices.getFusedLocationProviderClient(application)
     }
-}*/
+}

@@ -43,7 +43,8 @@ class PlanetDetaiViewModel @Inject constructor(
         val speed = ZodiacMapper.longitudeToDegrees(planetData.planetPosition.speedLongitude)
         val gaugeSpeed = speedToGauge(planet, speed.absolute)
         val zodiacPosition = planetData.zodiacPosition
-        val dignityTimeline = calculateDignityTimeline(planet, timeline)
+        val dignityTimeline =
+            calculateDignityTimeline(planet, timeline)
         val aspects= analysedChart.getPlanetAspects(planet)
 
         state = PlanetDetailUIState(

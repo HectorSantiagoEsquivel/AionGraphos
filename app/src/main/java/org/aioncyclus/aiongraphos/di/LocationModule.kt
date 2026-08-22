@@ -1,6 +1,6 @@
 package org.aioncyclus.aiongraphos.di
 
-/*
+
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -17,4 +17,4 @@ abstract class LocationModule {
     abstract fun bindLocationTracker(
         tracker: DefaultLocationTracker
     ): LocationTracker
-}*/
+}

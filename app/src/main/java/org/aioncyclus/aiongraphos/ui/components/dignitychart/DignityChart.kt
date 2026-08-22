@@ -1,5 +1,7 @@
 package org.aioncyclus.aiongraphos.ui.components.dignitychart
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -51,6 +54,7 @@ import com.patrykandpatrick.vico.core.common.Fill
 import com.patrykandpatrick.vico.core.common.component.TextComponent
 import com.patrykandpatrick.vico.core.common.data.ExtraStore
 import com.patrykandpatrick.vico.core.common.shader.ShaderProvider
+import kotlinx.coroutines.delay
 import org.aioncyclus.aiongraphos.R
 import org.aioncyclus.aiongraphos.domain.model.zodiac.ZodiacPosition
 import org.aioncyclus.aiongraphos.ui.mapper.iconOf
@@ -72,7 +76,6 @@ fun DignityChart(
     val scrollState = rememberScrollState()
     Card(
         shape = RoundedCornerShape(10.dp),
-        //modifier = modifier.aspectRatio(1.45f / 1f),
         colors = CardDefaults.cardColors(
             containerColor = Color.Gray.copy(alpha = 0.12f)
         )
@@ -108,6 +111,7 @@ fun DignityChart(
                         )
                     }
                 }
+
                 Box(
                     modifier = Modifier
                         .width(chartWidth)
@@ -123,7 +127,6 @@ fun DignityChart(
                         modifier = Modifier.fillMaxSize()
                     )
                 }
-
             }
 
         }
@@ -369,7 +372,9 @@ fun LineChart(
     modifier: Modifier = Modifier
 ) {
 
-    val splitYKey = ExtraStore.Key<Float>()
+    val splitYKey = remember {
+        ExtraStore.Key<Float>()
+    }
 
     val modelProducer = remember { CartesianChartModelProducer() }
 
@@ -450,6 +455,7 @@ fun LineChart(
         modelProducer = modelProducer,
         scrollState = rememberVicoScrollState(scrollEnabled = false),
         zoomState = rememberVicoZoomState(zoomEnabled = false),
+        animateIn = false,
         modifier = modifier
     )
 }
