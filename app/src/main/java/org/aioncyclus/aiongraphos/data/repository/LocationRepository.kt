@@ -1,6 +1,7 @@
 package org.aioncyclus.aiongraphos.data.repository
 
 
+import org.aioncyclus.aiongraphos.data.location.AndroidReverseGeocoder
 import org.aioncyclus.aiongraphos.data.location.LocationTracker
 import org.aioncyclus.aiongraphos.data.location.TimeZoneResolver
 import org.aioncyclus.aiongraphos.domain.model.location.Location
@@ -11,7 +12,8 @@ import javax.inject.Singleton
 
 @Singleton
 class LocationRepository @Inject constructor(
-    private val locationTracker: LocationTracker
+    private val locationTracker: LocationTracker,
+    private val reverseGeocoder: AndroidReverseGeocoder
 )
 {
     private var currentLocation: Location?=null
@@ -23,8 +25,13 @@ class LocationRepository @Inject constructor(
         val latitude=androidLocation.latitude
 
         val zoneId=TimeZoneResolver.resolve(latitude,longitude)
+        var localeName= reverseGeocoder.getLocationName(latitude,longitude)
+        if(localeName==null)
+        {
+            localeName="Current"
+        }
         val location= Location(
-            name = "Current",
+            name = localeName,
             zoneID = ZoneId.of(zoneId),
             latitude = latitude,
             longitude =longitude
