@@ -36,8 +36,9 @@ fun ProgressGauge(
     value: Double,
     labelSize:Float =0.12F,
     labelVerticalPosition: Float=0.82F,
-    trackColour: Color = Color(0xFFE0E0E0),
-    progressColour: Color = Color(0x334CAF50),
+    trackColour: Color,
+    progressColour: Color,
+    labelColour: Color
 )
 {
     val textMeasurer = rememberTextMeasurer(0)
@@ -65,7 +66,8 @@ fun ProgressGauge(
             labelSize,
             labelVerticalPosition,
             textMeasurer,
-            value)
+            value,
+            labelColour)
 
     }
 }
@@ -77,7 +79,7 @@ private fun DrawScope.drawStrengthLabel(
     labelVerticalPosition:Float,
     textMeasurer: TextMeasurer,
     strength: Double,
-    color: Color =Color.White
+    color: Color
 )
 {
     val valueFont = gaugeGeometry.radius * labelSize
@@ -107,6 +109,10 @@ private fun DrawScope.drawStrengthLabel(
 fun NeedleGauge(
     speed: Distance,
     gaugeValue: Double,
+    labelColour: Color,
+    stationaryColour: Color,
+    slowColour: Color,
+    swiftColour: Color
 ) {
     val textMeasurer = rememberTextMeasurer(0)
     Canvas(modifier = Modifier.fillMaxSize()) {
@@ -115,11 +121,14 @@ fun NeedleGauge(
         val clampedValue = gaugeValue.coerceIn(0.0, 100.0)
         val gaugeGeometry= gaugeGeometry(size)
 
-        drawSpeedArc(gaugeGeometry)
+        drawSpeedArc(gaugeGeometry,
+            stationaryColour,
+            slowColour,
+            swiftColour)
         // Mean marker
-        drawAngleMarker(gaugeGeometry)
-        drawSpeedLabels(gaugeGeometry,textMeasurer,speed,gaugeValue)
-        drawNeedle(gaugeGeometry,clampedValue)
+        drawAngleMarker(gaugeGeometry,labelColour)
+        drawSpeedLabels(gaugeGeometry,textMeasurer,speed,gaugeValue,labelColour)
+        drawNeedle(gaugeGeometry,clampedValue,labelColour)
 
     }
 }
@@ -131,7 +140,7 @@ private fun DrawScope.drawSpeedLabels(
     textMeasurer: TextMeasurer,
     speed: Distance,
     gaugeValue: Double,
-    color: Color =Color.White
+    color: Color
 )
 {
     val titleFont = gaugeGeometry.radius * 0.11f
@@ -183,7 +192,7 @@ private fun DrawScope.drawSpeedLabels(
         text = statusText,
         style = TextStyle(
             fontSize = labelFont.sp,
-            color = Color.White,
+            color = color,
             textAlign = TextAlign.Center
         )
     )
@@ -197,12 +206,12 @@ private fun DrawScope.drawSpeedLabels(
 }
 
 private fun DrawScope.drawSpeedArc(
-    gaugeGeometry: GaugeGeometry
+    gaugeGeometry: GaugeGeometry,
+    stationaryColour: Color,
+    slowColour: Color,
+    swiftColour: Color
 )
 {
-    val stationaryColour=Color(0xFF11224D)
-    val slowColour=Color(0xFF2C599D)
-    val swiftColour=Color(0xFFF98125)
 
     val arcRect =gaugeGeometry.arcRect
 
@@ -258,7 +267,7 @@ private fun DrawScope.drawGaugeSegment(
 
 private fun DrawScope.drawAngleMarker(
     geometry: GaugeGeometry,
-    color: Color =Color.White
+    color: Color
 )
 {
     val angle = Math.toRadians((START_ANGLE + TOTAL_SWEEP / 2f).toDouble())
@@ -284,7 +293,7 @@ private fun DrawScope.drawAngleMarker(
 private fun DrawScope.drawNeedle(
     gaugeGeometry: GaugeGeometry,
     gaugeValue: Double,
-    color: Color =Color.White
+    color: Color
 ) {
 
     val center = gaugeGeometry.center

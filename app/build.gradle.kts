@@ -64,6 +64,7 @@ dependencies {
         )
     }
     implementation("com.github.luben:zstd-jni:1.4.9-5@aar")
+    implementation(libs.kotlinx.coroutines.play.services)
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation(libs.vico.compose)
     implementation(libs.vico.compose.m3)

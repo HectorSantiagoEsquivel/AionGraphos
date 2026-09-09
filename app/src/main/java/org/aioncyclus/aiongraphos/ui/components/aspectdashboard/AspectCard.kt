@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import org.aioncyclus.aiongraphos.domain.model.aspect.Aspect
 import org.aioncyclus.aiongraphos.domain.model.planet.Planet
 import org.aioncyclus.aiongraphos.ui.mapper.iconOf
+import org.aioncyclus.aiongraphos.ui.theme.AspectColour
 
 
 @Composable
@@ -26,13 +28,15 @@ fun AspectCard(aspect: Aspect,
                onClick: (() -> Unit)? = null,
                modifier: Modifier = Modifier)
 {
-    val colour = Color.White
+    val aspectColour= AspectColour.of(aspect)
+    val planetColour= MaterialTheme.colorScheme.onBackground
+    val surfaceColour= MaterialTheme.colorScheme.surface
     Card(
         shape= RoundedCornerShape(10.dp),
         modifier= modifier
             .aspectRatio(1f),
         colors = CardDefaults.cardColors(
-            containerColor = Color.Gray.copy(alpha = 0.12f)
+            containerColor = surfaceColour
         )
     )
     {
@@ -48,16 +52,16 @@ fun AspectCard(aspect: Aspect,
 
                 Icon(
                     painter = painterResource(planetBIconRes),
-                    contentDescription = null,
-                    tint = colour,
+                    contentDescription = "Planet B",
+                    tint = planetColour,
                     modifier = Modifier
                         .fillMaxSize(0.4f)
                         .align(AbsoluteAlignment.BottomRight)
                 )
                 Icon(
                     painter = painterResource(planetAIconRes),
-                    contentDescription = null,
-                    tint = colour,
+                    contentDescription = "Planet A",
+                    tint = planetColour,
                     modifier = Modifier
                         .fillMaxSize(0.4f)
                         .align(AbsoluteAlignment.TopLeft)
@@ -65,7 +69,7 @@ fun AspectCard(aspect: Aspect,
                 Icon(
                     painter = painterResource(aspectIconRes),
                     contentDescription = "Aspect",
-                    tint = colour,
+                    tint = aspectColour,
                     modifier = Modifier
                         .fillMaxSize(0.7f)
                 )
@@ -82,8 +86,8 @@ fun AspectCard(aspect: Aspect,
                 val otherPlanetIconRes = iconOf(otherPlanet)
                 Icon(
                     painter = painterResource(otherPlanetIconRes),
-                    contentDescription = null,
-                    tint = colour,
+                    contentDescription = "Other Planet",
+                    tint = planetColour,
                     modifier = Modifier
                         .fillMaxSize(0.6f)
                         .align(AbsoluteAlignment.TopLeft)
@@ -91,7 +95,7 @@ fun AspectCard(aspect: Aspect,
                 Icon(
                     painter = painterResource(aspectIconRes),
                     contentDescription = "Aspect",
-                    tint = colour,
+                    tint = aspectColour,
                     modifier = Modifier
                         .fillMaxSize(0.65f)
                         .align(AbsoluteAlignment.BottomRight)

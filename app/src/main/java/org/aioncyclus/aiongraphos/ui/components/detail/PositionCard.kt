@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,21 +24,25 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.aioncyclus.aiongraphos.domain.model.zodiac.ZodiacPosition
+import org.aioncyclus.aiongraphos.ui.mapper.iconOf
+import org.aioncyclus.aiongraphos.ui.theme.ElementColour
 import org.aioncyclus.aiongraphos.ui.theme.JetBrainsMono
 
 @Composable
 fun PositionCard
-            (iconRes: Int,
-             zodiacPosition: ZodiacPosition,
-             colour: Color,
+            (zodiacPosition: ZodiacPosition,
              modifier: Modifier = Modifier)
 {
+    val iconRes = iconOf(zodiacPosition.sign)
+    val iconColour= ElementColour.of(zodiacPosition.sign)
+    val labelColour= MaterialTheme.colorScheme.onSurface
+    val surfaceColour= MaterialTheme.colorScheme.surface
     Card(
         shape= RoundedCornerShape(10.dp),
         modifier= modifier
             .aspectRatio(1f),
         colors = CardDefaults.cardColors(
-            containerColor = Color.Gray.copy(alpha = 0.12f)
+            containerColor = surfaceColour
         )
     )
     {
@@ -48,7 +53,7 @@ fun PositionCard
             Icon(
                 painter = painterResource(iconRes),
                 contentDescription = null,
-                tint = colour,
+                tint = iconColour,
                 modifier = Modifier.fillMaxSize(0.7F)
             )
             Canvas(
@@ -59,10 +64,9 @@ fun PositionCard
             {
                 drawPositionLabel(textMeasurer,
                     zodiacPosition.degreeInSign,
-                    zodiacPosition.minuteInDegree)
+                    zodiacPosition.minuteInDegree,
+                    labelColour)
             }
-
-
         }
     }
 }
@@ -71,7 +75,7 @@ private fun DrawScope.drawPositionLabel(
     textMeasurer: TextMeasurer,
     degree: Int,
     minute: Int,
-    colour: Color =Color.White
+    colour: Color
 )
 {
 

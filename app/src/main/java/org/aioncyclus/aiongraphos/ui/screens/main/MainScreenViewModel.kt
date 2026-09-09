@@ -9,16 +9,21 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.aioncyclus.aiongraphos.data.repository.ChartRepository
 import org.aioncyclus.aiongraphos.data.repository.LocationRepository
+import org.aioncyclus.aiongraphos.domain.calculator.ZodiacMapper
+import org.aioncyclus.aiongraphos.domain.model.chart.AnalysedChart
 import org.aioncyclus.aiongraphos.domain.model.chart.ChartContext
 import org.aioncyclus.aiongraphos.domain.model.dignity.TraditionalDignities
 import org.aioncyclus.aiongraphos.domain.model.dignity.scoreRange.TraditionalPlanetScoreRange
 import org.aioncyclus.aiongraphos.domain.model.lot.LotType
 import org.aioncyclus.aiongraphos.domain.model.planet.Planet
+import org.aioncyclus.aiongraphos.ui.components.chart.ChartUIState
 import org.aioncyclus.aiongraphos.ui.components.planetdashboard.PlanetCardUIState
-import org.aioncyclus.aiongraphos.ui.components.planetdashboard.PlanetDashBoardUIState
+import org.aioncyclus.aiongraphos.ui.components.planetdashboard.PlanetDashboardUIState
 import org.aioncyclus.aiongraphos.ui.mapper.iconOf
 import org.aioncyclus.aiongraphos.ui.theme.PlanetColour
 import java.time.Instant
+import java.util.Dictionary
+import java.util.EnumMap
 import javax.inject.Inject
 
 
@@ -29,7 +34,7 @@ class MainScreenViewModel @Inject constructor(
 ): ViewModel()
 {
 
-    var state by mutableStateOf(PlanetDashBoardUIState())
+    var state by mutableStateOf(MainScreenUIState())
         private set
 
     init {
@@ -39,9 +44,12 @@ class MainScreenViewModel @Inject constructor(
     fun load()
     {
         viewModelScope.launch {
+            state=state.copy(
+                isLoading=true,
+                error=null
+            )
             val location = locationRepository.getCurrentLocation()?:
-            locationRepository.useCurrentLocation()?:
-            return@launch
+            locationRepository.useCurrentLocation()
 
             val planets=listOf<Planet>(
                 Planet.MOON,
@@ -55,7 +63,7 @@ class MainScreenViewModel @Inject constructor(
                 Planet.NEPTUNE,
                 Planet.PLUTO
             )
-            val lots=listOf<LotType>(LotType.Fortune, LotType.Spirit, LotType.Eros, LotType.Exaltation)
+            val lots=listOf<LotType>(LotType.Fortune, LotType.Spirit, LotType.Eros, LotType.Basis, LotType.Exaltation)
             val dignitySystem= TraditionalDignities()
 
             if(location!=null)
@@ -66,32 +74,60 @@ class MainScreenViewModel @Inject constructor(
                     lots,
                     chartContext,
                     dignitySystem)
-                val planetStates = mutableListOf<PlanetCardUIState>()
-
-                for (planetData in chart.chart.planetaryData)
-                {
-                    val score = chart.analysis.conditions
-                        .first { it.planet == planetData.planet }
-                        .score
-
-                    val strengthPercentage= calculateStrengthPercentage(planetData.planet,score)
-                    val planetColour= PlanetColour.of(planetData.planet)
-                    val iconRes=iconOf(planetData.planet)
-
-                    planetStates.add(
-                        PlanetCardUIState(
-                            planet = planetData.planet,
-                            iconRes = iconRes,
-                            strength = strengthPercentage,
-                            planetColour
-                        )
-                    )
-                }
-                state = PlanetDashBoardUIState(planetStates,location.name)
+                val planetDashBoardUIState=buildPlanetDashBoardUIState(chart)
+                val chartUIState=buildChartUIState(chart)
+                state = MainScreenUIState(
+                    planetDashboardUIState= planetDashBoardUIState,
+                    chartUIState=chartUIState,
+                    title = location.name,
+                    isLoading = false,
+                    error = null)
             }
-
+            else
+            {
+                //TODO write more specific errors.
+                state=state.copy(
+                    isLoading=false,
+                    error="Couldn't load current location\n" +
+                            "Please make sure to activate your system's location and try again"
+                )
+            }
         }
+    }
 
+    private fun buildChartUIState(chart: AnalysedChart): ChartUIState
+    {
+        return ChartUIState(
+            chart.chart.planetaryData,
+            chart.chart.housesData,
+            chart.analysis.lots,
+            chart.analysis.aspects,
+            chart.chart.nodeData)
+    }
+
+    private fun buildPlanetDashBoardUIState(chart: AnalysedChart): PlanetDashboardUIState
+    {
+        val planetStates = mutableListOf<PlanetCardUIState>()
+        for (planetData in chart.chart.planetaryData)
+        {
+            val score = chart.analysis.conditions
+                .first { it.planet == planetData.planet }
+                .score
+
+            val strengthPercentage= calculateStrengthPercentage(planetData.planet,score)
+            val planetColour= PlanetColour.of(planetData.planet)
+            val iconRes=iconOf(planetData.planet)
+
+            planetStates.add(
+                PlanetCardUIState(
+                    planet = planetData.planet,
+                    iconRes = iconRes,
+                    strength = strengthPercentage,
+                    planetColour
+                )
+            )
+        }
+        return PlanetDashboardUIState(planetStates)
     }
 
 

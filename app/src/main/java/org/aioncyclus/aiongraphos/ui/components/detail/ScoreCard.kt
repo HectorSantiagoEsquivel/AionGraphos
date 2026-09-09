@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,15 +27,17 @@ import org.aioncyclus.aiongraphos.ui.theme.JetBrainsMono
 @Composable
 fun ScoreCard(score:Int,
               strengthPercentage: Double,
-              colour: Color=Color.White,
+              progressColour: Color= MaterialTheme.colorScheme.onBackground,
               modifier: Modifier = Modifier)
 {
+    val surfaceColour= MaterialTheme.colorScheme.surface
+    val labelColour= MaterialTheme.colorScheme.onSurface
     Card(
         shape= RoundedCornerShape(10.dp),
         modifier= modifier
             .aspectRatio(1f),
         colors = CardDefaults.cardColors(
-            containerColor = Color.Gray.copy(alpha = 0.12f)
+            containerColor = surfaceColour
         )
     )
     {
@@ -49,12 +52,17 @@ fun ScoreCard(score:Int,
             ) {
                 drawScoreLabel(
                     textMeasurer = textMeasurer,
-                    score = score
+                    score = score,
+                    scoreColour = progressColour,
+                    titleColour = labelColour
                 )
 
             }
 
-            ProgressGauge(value = strengthPercentage, progressColour = colour)
+            ProgressGauge(value = strengthPercentage,
+                progressColour = progressColour,
+                trackColour = surfaceColour,
+                labelColour = labelColour)
 
         }
     }
@@ -63,7 +71,8 @@ fun ScoreCard(score:Int,
 private fun DrawScope.drawScoreLabel(
     textMeasurer: TextMeasurer,
     score: Int,
-    colour: Color =Color.White
+    titleColour: Color,
+    scoreColour:Color
 )
 {
     val titleFontSize =with(this) {
@@ -78,7 +87,7 @@ private fun DrawScope.drawScoreLabel(
         text = titleText,
         style = TextStyle(
             fontSize = titleFontSize,
-            color = Color.White,
+            color = titleColour,
             textAlign = TextAlign.Start
         )
     )
@@ -88,7 +97,7 @@ private fun DrawScope.drawScoreLabel(
             fontFamily = JetBrainsMono,
             fontWeight = FontWeight.Normal,
             fontSize = scoreFontSize,
-            color = colour,
+            color = scoreColour,
             textAlign = TextAlign.Center
         )
     )

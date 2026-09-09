@@ -44,6 +44,8 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
+            val color =MaterialTheme.colorScheme.background
+            println("HEX DEBUG $color")
             AiongraphosTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),

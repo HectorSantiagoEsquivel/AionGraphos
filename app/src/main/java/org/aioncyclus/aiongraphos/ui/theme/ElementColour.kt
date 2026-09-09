@@ -10,10 +10,10 @@ object ElementColour {
     {
         return when(element)
         {
-            Element.FIRE -> Color(0xFFE53935)
-            Element.AIR ->Color(0xFFFFD54F)
-            Element.WATER -> Color(0xFF1E88E5)
-            Element.EARTH -> Color(0xFF4CAF50)
+            Element.FIRE  -> RubyRed
+            Element.AIR   -> CitrineYellow
+            Element.WATER -> SapphireBlue
+            Element.EARTH -> EmeraldGreen
         }
     }
 

@@ -5,7 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import org.aioncyclus.aiongraphos.domain.model.planet.Planet
 import org.aioncyclus.aiongraphos.ui.navigation.AppScreen
-import org.aioncyclus.aiongraphos.ui.screens.main.ChartScreen
+import org.aioncyclus.aiongraphos.ui.screens.main.MainScreen
 import org.aioncyclus.aiongraphos.ui.screens.planetdetail.PlanetDetailScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import org.aioncyclus.aiongraphos.ui.screens.main.MainScreenViewModel
@@ -27,13 +27,14 @@ fun AppNavHost(
 
             val vm = hiltViewModel<MainScreenViewModel>()
 
-            ChartScreen(
+            MainScreen(
                 state = vm.state,
                 onPlanetClick = { planet ->
                     navController.navigate(
                         AppScreen.PlanetDetail.planetRoute(planet)
                     )
-                }
+                },
+                onLocationPermissionGranted = vm::load
             )
         }
 

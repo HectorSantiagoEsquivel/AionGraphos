@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import org.aioncyclus.aiongraphos.R
 import org.aioncyclus.aiongraphos.domain.model.aspect.Aspect
 import org.aioncyclus.aiongraphos.domain.model.aspect.AspectType
+import org.aioncyclus.aiongraphos.domain.model.lot.LotType
 import org.aioncyclus.aiongraphos.domain.model.planet.Planet
 import org.aioncyclus.aiongraphos.domain.model.zodiac.Sign
 
@@ -62,3 +63,15 @@ fun iconOf(aspect: Aspect): Int
     }
 }
 
+@DrawableRes
+fun iconOf(lot: LotType): Int
+{
+    return when(lot)
+    {
+        LotType.Fortune -> R.drawable.ic_lot_fortune
+        LotType.Spirit -> R.drawable.ic_lot_spirit
+        LotType.Exaltation -> R.drawable.ic_lot_exaltation
+        LotType.Eros -> R.drawable.ic_lot_eros
+        LotType.Basis -> R.drawable.ic_lot_basis
+    }
+}

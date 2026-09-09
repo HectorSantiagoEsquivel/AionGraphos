@@ -24,12 +24,7 @@ enum class Planet(
     val meanSpeed: Double
 )
 {
-    SUN(
-        SweConst.SE_SUN,
-        "☉",
-        "Sun",
-        0.9856
-    ),
+
     MOON(
         SweConst.SE_MOON,
         "☽",
@@ -47,6 +42,12 @@ enum class Planet(
         "♀",
         "Venus",
         1.2
+    ),
+    SUN(
+        SweConst.SE_SUN,
+        "☉",
+        "Sun",
+        0.9856
     ),
     MARS(
         SweConst.SE_MARS,

@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,9 +18,13 @@ import org.aioncyclus.aiongraphos.ui.components.gauge.ProgressGauge
 @Composable
 fun PlanetCard(
     state: PlanetCardUIState,
-    onClick: (() -> Unit)? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null
 ) {
+    val progressColour = MaterialTheme.colorScheme.onBackground
+    val surfaceColour= MaterialTheme.colorScheme.surface
+    val labelColour= MaterialTheme.colorScheme.onSurface
+
     Card(
         shape = RoundedCornerShape(10.dp),
         modifier = modifier
@@ -32,17 +37,21 @@ fun PlanetCard(
                 }
             },
         colors = CardDefaults.cardColors(
-            containerColor = Color.Gray.copy(alpha = 0.12f)
+            containerColor = surfaceColour
         )
     ) {
         Box(
             contentAlignment = Alignment.Center,
         ) {
-            ProgressGauge(state.strength, progressColour = state.colour)
+            ProgressGauge(
+                state.strength,
+                progressColour = progressColour,
+                trackColour = surfaceColour,
+                labelColour = labelColour)
             Icon(
                 painter = painterResource(state.iconRes),
                 contentDescription = null,
-                tint = state.colour,
+                tint = progressColour,
                 modifier = Modifier.fillMaxSize(0.33f)
             )
         }

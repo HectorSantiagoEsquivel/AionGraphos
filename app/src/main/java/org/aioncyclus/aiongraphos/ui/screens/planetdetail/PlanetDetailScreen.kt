@@ -41,17 +41,14 @@ fun PlanetDetailScreen(
     state: PlanetDetailUIState,
     modifier: Modifier = Modifier
 ) {
-    val planetColour = PlanetColour.of(state.planet)
     val planetIconRes = iconOf(state.planet)
-
-    PortraitView(state,planetColour,planetIconRes,modifier)
+    PortraitView(state,planetIconRes,modifier)
 
 }
 
 @Composable
 private fun PortraitView(
     state: PlanetDetailUIState,
-    planetColour: Color,
     planetIconRes: Int,
     modifier: Modifier = Modifier
 )
@@ -83,7 +80,6 @@ private fun PortraitView(
                 GlyphCard(
                     planetIconRes,
                     state.isRetrograde,
-                    planetColour,
                     modifier = Modifier
                         .fillMaxHeight()
                         .aspectRatio(1f)
@@ -92,8 +88,6 @@ private fun PortraitView(
 
 
             if (state.zodiacPosition != null) {
-                val signColour = ElementColour.of(state.zodiacPosition.sign)
-                val signIconRes = iconOf(state.zodiacPosition.sign)
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -103,9 +97,7 @@ private fun PortraitView(
                 )
                 {
                     PositionCard(
-                        signIconRes,
                         state.zodiacPosition,
-                        signColour,
                         modifier = Modifier
                             .fillMaxHeight()
                             .aspectRatio(1f)
@@ -135,7 +127,6 @@ private fun PortraitView(
                 ScoreCard(
                     state.score,
                     state.strength,
-                    planetColour,
                     modifier = Modifier
                         .fillMaxHeight()
                         .aspectRatio(1f)
@@ -169,7 +160,6 @@ private fun PortraitView(
             if (state.dignityTimeline.isNotEmpty()) {
                 DignityChart(
                     timeline = state.dignityTimeline,
-                    colour = planetColour,
                     modifier = Modifier.weight(1f)
                 )
             } else {

@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -68,17 +69,15 @@ import java.util.Locale
 @Composable
 fun DignityChart(
     timeline: List<PlanetDignitySample>,
-    colour: Color,
     modifier: Modifier = Modifier
 ) {
-    val evenColour = Color(0x4C808080)
-    val oddColour=   Color.Transparent
+    val surfaceColour= MaterialTheme.colorScheme.surface
+    val labelColour= MaterialTheme.colorScheme.onBackground
+    val lineColour= MaterialTheme.colorScheme.primary
+
     val scrollState = rememberScrollState()
     Card(
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Gray.copy(alpha = 0.12f)
-        )
     ) {
         BoxWithConstraints(
             modifier = Modifier
@@ -104,7 +103,8 @@ fun DignityChart(
                     timeline.forEachIndexed { index, sample ->
                         DignityColumn(
                             sample = sample,
-                            backgroundColor = if (index % 2 == 0) evenColour else oddColour,
+                            isTransparent = index % 2 == 0,
+                            labelColour= labelColour,
                             modifier = Modifier
                                 .width(columnWidth)
                                 .height(columnHeight)
@@ -120,7 +120,8 @@ fun DignityChart(
                 ) {
                     LineChart(
                         values = timeline.map { it.score },
-                        colour = colour,
+                        lineColour = lineColour,
+                        labelColour=labelColour,
                         padding = columnWidth/2,
                         strokeThickness= strokeThickness,
                         textSize= fontSize,
@@ -136,20 +137,27 @@ fun DignityChart(
 @Composable
 fun DignityColumn(
     sample: PlanetDignitySample,
-    backgroundColor: Color = Color.Transparent,
+    isTransparent: Boolean,
+    labelColour: Color,
     modifier: Modifier = Modifier
 ) {
     val signIconRes=iconOf(sample.zodiacPosition.sign)
     val signColour= ElementColour.of(sample.zodiacPosition.sign)
+    var backgroundColour=signColour.copy(alpha = 0.05F)
+    if(!isTransparent)
+    {
+        backgroundColour=signColour.copy(alpha = 0.15F)
+    }
     Column(modifier
-        .background(backgroundColor)) {
+        .background(backgroundColour)) {
 
         DignityColumnHeader(
             instant = sample.instant,
             zoneId = sample.zoneId,
             zodiacPosition = sample.zodiacPosition,
             iconRes = signIconRes,
-            colour = signColour,
+            signColour = signColour,
+            labelColour =labelColour,
             modifier = Modifier.weight(2f)
         )
 
@@ -159,7 +167,8 @@ fun DignityColumn(
 
         DignityColumnFooter(
             strengthPercentage = sample.strength,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            labelColour = labelColour
         )
     }
 }
@@ -167,7 +176,8 @@ fun DignityColumn(
 @Composable
 fun DignityColumnFooter(
     strengthPercentage: Double,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    labelColour: Color
 )
 {
     val textMeasurer = rememberTextMeasurer()
@@ -182,6 +192,7 @@ fun DignityColumnFooter(
             drawFooterLabel(
                 strength = strengthPercentage,
                 textMeasurer = textMeasurer,
+                labelColour=labelColour
             )
         }
 
@@ -192,7 +203,7 @@ fun DignityColumnFooter(
 private fun DrawScope.drawFooterLabel(
     strength: Double,
     textMeasurer: TextMeasurer,
-    colour: Color =Color.White
+    labelColour: Color
 )
 {
 
@@ -207,7 +218,7 @@ private fun DrawScope.drawFooterLabel(
             fontFamily = JetBrainsMono,
             fontWeight = FontWeight.Normal,
             fontSize = fontSize,
-            color = colour,
+            color = labelColour,
             textAlign = TextAlign.Center
         )
     )
@@ -231,7 +242,8 @@ fun DignityColumnHeader(
     zoneId: ZoneId,
     zodiacPosition: ZodiacPosition,
     iconRes: Int,
-    colour: Color,
+    signColour: Color,
+    labelColour: Color,
     modifier: Modifier = Modifier
 ) {
     val textMeasurer = rememberTextMeasurer()
@@ -249,14 +261,15 @@ fun DignityColumnHeader(
                 instant = instant,
                 zoneId = zoneId,
                 degree = zodiacPosition.degreeInSign,
-                minute= zodiacPosition.minuteInDegree
+                minute= zodiacPosition.minuteInDegree,
+                colour = labelColour
             )
         }
 
         Icon(
             painter = painterResource(iconRes),
             contentDescription = null,
-            tint = colour,
+            tint = signColour,
             modifier = Modifier
                 .fillMaxWidth(0.50f)
                 .aspectRatio(1f)
@@ -271,7 +284,7 @@ private fun DrawScope.drawHeaderLabels(
     zoneId: ZoneId,
     degree: Int,
     minute: Int,
-    colour: Color =Color.White
+    colour: Color
 )
 {
 
@@ -365,7 +378,8 @@ fun DignityColumnSpacer(
 @Composable
 fun LineChart(
     values: List<Int>,
-    colour:Color,
+    lineColour:Color,
+    labelColour:Color,
     padding: Dp,
     textSize: Float,
     strokeThickness: Float,
@@ -385,7 +399,7 @@ fun LineChart(
 
     val textComponent = remember {
         TextComponent(
-            color = Color.White.toArgb(),
+            color = labelColour.toArgb(),
             typeface = typeface,
             textSizeSp = textSize,
         )
@@ -415,14 +429,14 @@ fun LineChart(
         }
     }
     val fillColours = intArrayOf(
-        colour.copy(alpha = 0.50f).toArgb(),
+        lineColour.copy(alpha = 0.50f).toArgb(),
         Color.Transparent.toArgb()
     )
 
     val lineProvider = LineCartesianLayer.LineProvider.series(
         LineCartesianLayer.Line(
             fill = LineCartesianLayer.LineFill.single(
-                Fill(colour.toArgb())
+                Fill(lineColour.toArgb())
             ),
             stroke = LineCartesianLayer.LineStroke.Continuous(
                 thicknessDp = strokeThickness,

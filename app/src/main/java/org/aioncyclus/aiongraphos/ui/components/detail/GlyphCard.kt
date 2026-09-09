@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
@@ -20,7 +21,7 @@ import org.aioncyclus.aiongraphos.R
 @Composable
 fun GlyphCard(iconRes: Int,
               isRetrograde: Boolean,
-              colour: Color,
+              colour: Color = MaterialTheme.colorScheme.onBackground,
               modifier: Modifier = Modifier)
 {
     Card(
@@ -28,7 +29,7 @@ fun GlyphCard(iconRes: Int,
         modifier= modifier
             .aspectRatio(1f),
         colors = CardDefaults.cardColors(
-            containerColor = Color.Gray.copy(alpha = 0.12f)
+            containerColor = MaterialTheme.colorScheme.surface
         )
     )
     {

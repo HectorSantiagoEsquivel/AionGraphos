@@ -23,7 +23,7 @@ import kotlin.collections.forEach
 
 @Composable
 fun PlanetDashboard(
-    state: PlanetDashBoardUIState,
+    state: PlanetDashboardUIState,
     columns: Int,
     onPlanetClick: (Planet) -> Unit,
     modifier: Modifier = Modifier
