@@ -62,7 +62,7 @@ class SwissEphemerisProvider {
                         }
                     }
                 } else {
-                    // It’s a directory > recurse
+                    // It's a directory try again
                     copyAssetFolder(assetManager, assetPath, destFile.path)
                 }
             }

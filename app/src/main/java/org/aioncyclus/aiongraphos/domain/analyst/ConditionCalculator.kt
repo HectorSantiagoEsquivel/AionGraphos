@@ -8,7 +8,7 @@ import org.aioncyclus.aiongraphos.domain.model.planet.Condition
 
 //TODO:
 // - This class could be an object
-class ConditionCalculator {
+object ConditionCalculator {
 
     fun calculateChartConditions(astroChart: AstroChart,
                                  sect: Sect,

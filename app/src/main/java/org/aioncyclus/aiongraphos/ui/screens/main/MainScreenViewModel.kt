@@ -7,13 +7,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.aioncyclus.aiongraphos.data.model.ChartSettings
 import org.aioncyclus.aiongraphos.data.repository.ChartRepository
 import org.aioncyclus.aiongraphos.data.repository.LocationRepository
+import org.aioncyclus.aiongraphos.data.repository.SettingsRepository
 import org.aioncyclus.aiongraphos.domain.calculator.ZodiacMapper
 import org.aioncyclus.aiongraphos.domain.model.chart.AnalysedChart
 import org.aioncyclus.aiongraphos.domain.model.chart.ChartContext
+import org.aioncyclus.aiongraphos.domain.model.dignity.DignitySystemType
 import org.aioncyclus.aiongraphos.domain.model.dignity.TraditionalDignities
 import org.aioncyclus.aiongraphos.domain.model.dignity.scoreRange.TraditionalPlanetScoreRange
+import org.aioncyclus.aiongraphos.domain.model.house.HouseSystem
 import org.aioncyclus.aiongraphos.domain.model.lot.LotType
 import org.aioncyclus.aiongraphos.domain.model.planet.Planet
 import org.aioncyclus.aiongraphos.ui.components.chart.ChartUIState
@@ -30,7 +34,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
     private val chartRepository: ChartRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val settingsRepository: SettingsRepository
 ): ViewModel()
 {
 
@@ -51,29 +56,19 @@ class MainScreenViewModel @Inject constructor(
             val location = locationRepository.getCurrentLocation()?:
             locationRepository.useCurrentLocation()
 
-            val planets=listOf<Planet>(
-                Planet.MOON,
-                Planet.MERCURY,
-                Planet.VENUS,
-                Planet.SUN,
-                Planet.MARS,
-                Planet.JUPITER,
-                Planet.SATURN,
-                Planet.URANUS,
-                Planet.NEPTUNE,
-                Planet.PLUTO
-            )
-            val lots=listOf<LotType>(LotType.Fortune, LotType.Spirit, LotType.Eros, LotType.Basis, LotType.Exaltation)
-            val dignitySystem= TraditionalDignities()
+            val settings=settingsRepository.loadSettings()
 
             if(location!=null)
             {
                 val chartContext=
                     ChartContext(Instant.now(), location)
-                val chart=chartRepository.refresh(planets,
-                    lots,
+                val chart=chartRepository.refresh(
+                    settings.planets,
+                    settings.lots,
                     chartContext,
-                    dignitySystem)
+                    settings.dignitySystemType.getDignitySystem(),
+                    settings.node,
+                    settings.houseSystem)
                 val planetDashBoardUIState=buildPlanetDashBoardUIState(chart)
                 val chartUIState=buildChartUIState(chart)
                 state = MainScreenUIState(

@@ -12,6 +12,7 @@ object TraditionalPlanetScoreRange {
             Planet.MOON -> PlanetScoreRange(35,-32)
             Planet.MERCURY -> PlanetScoreRange(44,-36)
             else -> PlanetScoreRange(33,-36)
+            //TODO: Calculate theoretical max and mins for the remaining planets
         }
     }
 }

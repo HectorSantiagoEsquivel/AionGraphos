@@ -11,9 +11,7 @@ import org.aioncyclus.aiongraphos.domain.model.lot.LotType
 class ChartAnalyser(
     val aspectCalculator: AspectCalculator = AspectCalculator(),
     val lotCalculator: LotCalculator = LotCalculator(),
-    val sectCalculator: SectCalculator= SectCalculator(),
-    val dignityCalculator: ConditionCalculator =ConditionCalculator()
-
+    val sectCalculator: SectCalculator= SectCalculator()
 )
 {
     fun analyse(astroChart: AstroChart, lotsToCalculate: List<LotType>,dignitySystem: DignitySystem): ChartAnalysis
@@ -21,7 +19,7 @@ class ChartAnalyser(
         val aspects= aspectCalculator.calculateAspects(astroChart.planetaryData+astroChart.nodeData)
         val sect= sectCalculator.determine(astroChart)
         val lotsData= lotCalculator.calculateLots(astroChart,sect,lotsToCalculate);
-        val conditions= dignityCalculator.calculateChartConditions(astroChart,sect,aspects,dignitySystem)
+        val conditions= ConditionCalculator.calculateChartConditions(astroChart,sect,aspects,dignitySystem)
         return ChartAnalysis(aspects,lotsData,sect,conditions)
     }
 

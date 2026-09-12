@@ -29,26 +29,45 @@ class AspectCalculator{
 
     private fun checkAspectBetween(planetDataA: PlanetData,planetDataB: PlanetData): Aspect?
     {
-        val distance=angularDistance(planetDataA.planetPosition.longitude,planetDataB.planetPosition.longitude)
-
-        for(aspectType in AspectType.entries)
-        {
-
-            var aspectOrb=distance-aspectType.angle
-            if(aspectOrb<0)
+        //Here I'm checking whether the aspect is between two nodes, if it is I skip it
+        //The nodes are always locked 180° apart, thus cluttering aspects otherwise.
+        if(!(((planetDataA.planet == Planet.MEAN_NORTH_NODE
+                    ||
+            planetDataA.planet == Planet.TRUE_NORTH_NODE)
+                &&
+            (planetDataB.planet== Planet.MEAN_SOUTH_NODE
+                    ||
+            planetDataB.planet == Planet.TRUE_SOUTH_NODE))
+            ||
+            ((planetDataA.planet == Planet.MEAN_SOUTH_NODE
+                    ||
+            planetDataA.planet == Planet.TRUE_SOUTH_NODE)
+                &&
+            (planetDataB.planet== Planet.MEAN_NORTH_NODE
+                    ||
+            planetDataB.planet == Planet.TRUE_NORTH_NODE))))
             {
-                aspectOrb *= -1
+                val distance=angularDistance(planetDataA.planetPosition.longitude,planetDataB.planetPosition.longitude)
+
+                for(aspectType in AspectType.entries)
+                {
+
+                    var aspectOrb=distance-aspectType.angle
+                    if(aspectOrb<0)
+                    {
+                        aspectOrb *= -1
+                    }
+                    if(aspectOrb<= aspectType.defaultOrb)
+                    {
+                        return Aspect(
+                            planetDataA.planet,
+                            planetDataB.planet,
+                            aspectType,
+                            ZodiacMapper.longitudeToDegrees(aspectOrb)
+                        )
+                    }
+                }
             }
-            if(aspectOrb<= aspectType.defaultOrb)
-            {
-                return Aspect(
-                    planetDataA.planet,
-                    planetDataB.planet,
-                    aspectType,
-                    ZodiacMapper.longitudeToDegrees(aspectOrb)
-                )
-            }
-        }
         return null
     }
 
