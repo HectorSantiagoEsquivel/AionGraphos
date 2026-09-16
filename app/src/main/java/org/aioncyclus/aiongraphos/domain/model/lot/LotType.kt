@@ -12,7 +12,7 @@ sealed class LotType(
 ) {
     object Fortune : LotType(
         id = "fortune",
-        name = "Lot of Fortune",
+        name = "Fortune",
         diurnalFormula = LotFormula(
             LotPoint.Ascendant,
             LotPoint.PlanetPoint(Planet.MOON),
@@ -27,7 +27,7 @@ sealed class LotType(
 
     object Spirit : LotType(
         id = "spirit",
-        name = "Lot of Spirit",
+        name = "Spirit",
         diurnalFormula = LotFormula(
             LotPoint.Ascendant,
             LotPoint.PlanetPoint(Planet.SUN),
@@ -42,7 +42,7 @@ sealed class LotType(
 
     object Eros : LotType(
         id = "eros",
-        name = "Lot of Eros",
+        name = "Eros",
         diurnalFormula = LotFormula(
             LotPoint.Ascendant,
             LotPoint.PlanetPoint(Planet.VENUS),
@@ -57,7 +57,7 @@ sealed class LotType(
 
     object Exaltation : LotType(
         id = "exaltation",
-        name = "Lot of Exaltation",
+        name = "Exaltation",
         diurnalFormula = LotFormula(
             LotPoint.Ascendant,
             LotPoint.BaseLot(Fortune),
@@ -72,7 +72,7 @@ sealed class LotType(
 
     object Basis : LotType(
         id = "basis",
-        name = "Lot of Basis",
+        name = "Basis",
         diurnalFormula = LotFormula(
             LotPoint.Ascendant,
             LotPoint.BaseLot(Fortune),
@@ -84,7 +84,24 @@ sealed class LotType(
             LotPoint.PlanetPoint(Planet.SATURN)
         )
     )
+    /*companion object {
+        val all = listOf(
+            Fortune,
+            Spirit,
+            Eros,
+            Exaltation,
+            Basis
+        )
+    }*/
 }
+val allLotTypes = listOf(
+    LotType.Fortune,
+    LotType.Spirit,
+    LotType.Eros,
+    LotType.Exaltation,
+    LotType.Basis
+)
+
 data class LotFormula(
     val point1: LotPoint,
     val point2: LotPoint,

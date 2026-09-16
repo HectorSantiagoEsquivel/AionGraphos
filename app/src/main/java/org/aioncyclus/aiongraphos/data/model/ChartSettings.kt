@@ -12,15 +12,9 @@ data class ChartSettings(
     val planets:List<Planet>,
     val lots: List<LotType>,
     val houseSystem: HouseSystem,
-    val node: Planet,
+    val isTrueNode: Boolean,
     val dignitySystemType: DignitySystemType
 )
-{
-    init {
-        require(node == Planet.MEAN_NORTH_NODE || node == Planet.TRUE_NORTH_NODE) {
-            "node must be a north node, was $node"
-        }
-    }
-}
+
 
 

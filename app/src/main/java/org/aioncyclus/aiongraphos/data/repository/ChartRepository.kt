@@ -26,7 +26,7 @@ class ChartRepository @Inject constructor(
                 lots:List<LotType>,
                 chartContext: ChartContext,
                 dignitySystem: DignitySystem,
-                node: Planet = Planet.MEAN_NORTH_NODE,
+                isNorthNode: Boolean = false,
                 houseSystem: HouseSystem = HouseSystem.PLACIDUS
     )
     : AnalysedChart {
@@ -36,7 +36,7 @@ class ChartRepository @Inject constructor(
             lots,
             chartContext,
             dignitySystem,
-            node,
+            isNorthNode,
             houseSystem
         )
         analysedChart=chart
@@ -45,7 +45,7 @@ class ChartRepository @Inject constructor(
             lots,
             chartContext,
             dignitySystem,
-            node,
+            isNorthNode,
             houseSystem)
         return chart
     }
@@ -54,7 +54,7 @@ class ChartRepository @Inject constructor(
                                       lots:List<LotType>,
                                       currentChartContext: ChartContext,
                                       dignitySystem: DignitySystem,
-                                      node: Planet = Planet.MEAN_NORTH_NODE,
+                                      isNorthNode: Boolean = false,
                                       houseSystem: HouseSystem = HouseSystem.PLACIDUS
     ):List<AnalysedChart>
     {
@@ -71,7 +71,7 @@ class ChartRepository @Inject constructor(
                     lots,
                     futureChartContext,
                     dignitySystem,
-                    node,
+                    isNorthNode,
                     houseSystem
                 ))
             }

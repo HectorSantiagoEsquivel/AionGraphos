@@ -55,7 +55,8 @@ import org.aioncyclus.aiongraphos.ui.components.planetdashboard.PlanetDashboard
 fun MainScreen(
     state: MainScreenUIState,
     onLocationPermissionGranted: () -> Unit,
-    onPlanetClick: (Planet) -> Unit
+    onPlanetClick: (Planet) -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -101,7 +102,8 @@ fun MainScreen(
     } else {
         ChartScreen(
             state = state,
-            onPlanetClick = onPlanetClick
+            onPlanetClick = onPlanetClick,
+            onSettingsClick = onSettingsClick
         )
     }
 }
@@ -134,7 +136,8 @@ fun PermissionRequiredScreen(
 @Composable
 fun ChartScreen(
     state: MainScreenUIState,
-    onPlanetClick: (Planet) -> Unit) {
+    onPlanetClick: (Planet) -> Unit,
+    onSettingsClick: () -> Unit) {
     /*val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE*/
 
@@ -166,96 +169,70 @@ fun ChartScreen(
     else if (state.planetDashboardUIState != null && state.chartUIState!=null) {
         val dashboardColumns = /*if (isLandscape) 5 else*/ 2
 
-        val drawerState = rememberDrawerState(
-            initialValue = DrawerValue.Closed
-        )
-
         val scope = rememberCoroutineScope()
 
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            drawerContent = {
-                ModalDrawerSheet(
-                    modifier = Modifier.fillMaxWidth(0.66F),
-                    drawerContainerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.75f)
-                ) {
-                    NavigationDrawerItem(
-                        label = { Text(text = "Location") },
-                        selected = false,
-                        onClick = { /*TODO*/ }
-                    )
-                }
+        Scaffold(
+            topBar = {
+                NavigationBar(
+                    title = state.title,
+                    onMenuClick = onSettingsClick
+
+                )
             }
-        )
-        {
-            Scaffold(
-                topBar = {
-                    NavigationBar(
-                        title = state.title,
-                        onMenuClick = {
-                            scope.launch {
-                                drawerState.apply {
-                                    if (isClosed) open() else close()
-                                }
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        flingBehavior = rememberSnapFlingBehavior(
+                            lazyListState = rememberLazyListState()
+                        )
+                    ) {
+                        item {
+                            Column(
+                                modifier = Modifier
+                                    .fillParentMaxHeight()
+                                    .fillMaxWidth()
+                            ) {
+                                Chart(
+                                    chartUIState = state.chartUIState,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1.5f)
+                                )
+
+                                AspectDashboard(
+                                    aspects = state.chartUIState.aspects,
+                                    columns = 5,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f)
+                                )
                             }
                         }
 
-                    )
-                }
-            ) { innerPadding ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                ) {
-
-                    Box(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            flingBehavior = rememberSnapFlingBehavior(
-                                lazyListState = rememberLazyListState()
+                        item {
+                            PlanetDashboard(
+                                state = state.planetDashboardUIState,
+                                columns = dashboardColumns,
+                                onPlanetClick = onPlanetClick,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillParentMaxHeight()
                             )
-                        ) {
-                            item {
-                                Column(
-                                    modifier = Modifier
-                                        .fillParentMaxHeight()
-                                        .fillMaxWidth()
-                                ) {
-                                    Chart(
-                                        chartUIState = state.chartUIState,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .weight(1.5f)
-                                    )
-
-                                    AspectDashboard(
-                                        aspects = state.chartUIState.aspects,
-                                        columns = 5,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .weight(1f)
-                                    )
-                                }
-                            }
-
-                            item {
-                                PlanetDashboard(
-                                    state = state.planetDashboardUIState,
-                                    columns = dashboardColumns,
-                                    onPlanetClick = onPlanetClick,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .fillParentMaxHeight()
-                                )
-                            }
                         }
                     }
                 }
             }
         }
+
     }
 }

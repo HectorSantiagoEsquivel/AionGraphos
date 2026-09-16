@@ -67,7 +67,7 @@ class MainScreenViewModel @Inject constructor(
                     settings.lots,
                     chartContext,
                     settings.dignitySystemType.getDignitySystem(),
-                    settings.node,
+                    settings.isTrueNode,
                     settings.houseSystem)
                 val planetDashBoardUIState=buildPlanetDashBoardUIState(chart)
                 val chartUIState=buildChartUIState(chart)

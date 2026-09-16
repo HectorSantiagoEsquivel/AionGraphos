@@ -43,7 +43,6 @@ fun PlanetDetailScreen(
 ) {
     val planetIconRes = iconOf(state.planet)
     PortraitView(state,planetIconRes,modifier)
-
 }
 
 @Composable

@@ -6,6 +6,8 @@ sealed class AppScreen(val route: String) {
     object Main : AppScreen("main")
     object PlanetDetail : AppScreen("planet_detail/{planet}")
 
+    object Settings: AppScreen("settings")
+
     fun planetRoute(planet: Planet): String =
         "planet_detail/${planet.name}"
 }

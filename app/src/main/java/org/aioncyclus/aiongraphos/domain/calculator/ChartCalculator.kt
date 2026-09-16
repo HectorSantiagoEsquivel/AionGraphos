@@ -14,7 +14,7 @@ class ChartCalculator(val planetCalculator: PlanetCalculator,
 
     fun calculate(planets:List<Planet>,
                   chartContext: ChartContext,
-                  node : Planet,
+                  isTrueNode : Boolean,
                   houseSystem: HouseSystem=PLACIDUS
     ): AstroChart
     {
@@ -24,7 +24,7 @@ class ChartCalculator(val planetCalculator: PlanetCalculator,
                 add(planetCalculator.calculate(planet,chartContext.contextDate))
             }
         }
-        val nodeData=planetCalculator.calculateNodeData(node, chartContext.contextDate)
+        val nodeData=planetCalculator.calculateNodeData(isTrueNode, chartContext.contextDate)
 
         val housesData=housesCalculator.calculate(
             chartContext.location.latitude,

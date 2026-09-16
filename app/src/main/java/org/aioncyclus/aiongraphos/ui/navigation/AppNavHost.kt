@@ -11,6 +11,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import org.aioncyclus.aiongraphos.ui.screens.main.MainScreenViewModel
 
 import org.aioncyclus.aiongraphos.ui.screens.planetdetail.PlanetDetaiViewModel
+import org.aioncyclus.aiongraphos.ui.screens.settings.SettingsScreen
+import org.aioncyclus.aiongraphos.ui.screens.settings.SettingsScreenViewModel
 
 
 @Composable
@@ -30,10 +32,9 @@ fun AppNavHost(
             MainScreen(
                 state = vm.state,
                 onPlanetClick = { planet ->
-                    navController.navigate(
-                        AppScreen.PlanetDetail.planetRoute(planet)
-                    )
+                    navController.navigate(AppScreen.PlanetDetail.planetRoute(planet))
                 },
+                onSettingsClick = { navController.navigate(AppScreen.Settings.route)},
                 onLocationPermissionGranted = vm::load
             )
         }
@@ -52,6 +53,17 @@ fun AppNavHost(
 
             PlanetDetailScreen(
                 state = vm.state
+            )
+        }
+
+        composable(AppScreen.Settings.route){
+            val vm = hiltViewModel<SettingsScreenViewModel>()
+
+            SettingsScreen(
+                state = vm.state,
+                onApplyClick = { chartSettings -> vm.applySettingChanges(chartSettings)
+                               navController.navigate(AppScreen.Main.route)},
+                onBackClick = { navController.popBackStack()}
             )
         }
     }

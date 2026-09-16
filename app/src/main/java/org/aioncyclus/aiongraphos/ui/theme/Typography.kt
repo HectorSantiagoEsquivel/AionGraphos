@@ -11,3 +11,7 @@ val JetBrainsMono = FontFamily(
     Font(R.font.jetbrainsmono_medium, FontWeight.Medium),
     Font(R.font.jetbrainsmono_bold, FontWeight.Bold)
 )
+
+val Anton = FontFamily(
+    Font(R.font.anton_regular, FontWeight.Normal)
+)

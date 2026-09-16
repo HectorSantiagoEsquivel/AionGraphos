@@ -12,9 +12,11 @@
     "PLUTO"
   ],
   "lots": [
-    "fortune"
+    "fortune",
+    "basis"
   ],
   "houseSystem": "WHOLE",
-  "node": "MEAN_NORTH_NODE",
+  "isTrueNode": false,
   "dignitySystemType": "TRADITIONAL"
 }
+

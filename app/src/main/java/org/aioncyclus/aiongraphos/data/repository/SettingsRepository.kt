@@ -52,7 +52,6 @@ class SettingsRepository @Inject constructor(
 
     fun saveSettings(chartSettings: ChartSettings) {
         val jsonString: String = json.encodeToString(chartSettings)
-        println("DebugSettings :"+jsonString)
         File(context.filesDir, "chart_settings.json").writeText(jsonString)
     }
 
