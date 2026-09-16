@@ -107,6 +107,7 @@ class MainScreenViewModel @Inject constructor(
             state = state.copy(
                 planetDashboardUIState= planetDashBoardUIState,
                 chartUIState=chartUIState,
+                chartInstant=chart.chart.chartContext.contextDate,
                 title = location.name,
                 error = null)
         }

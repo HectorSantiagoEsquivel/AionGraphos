@@ -1,6 +1,5 @@
 package org.aioncyclus.aiongraphos.ui.screens.main
 
-
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -8,40 +7,48 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
-
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-
 import androidx.compose.ui.text.style.TextAlign
 import androidx.core.content.ContextCompat
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import org.aioncyclus.aiongraphos.domain.model.planet.Planet
 import org.aioncyclus.aiongraphos.ui.components.aspectdashboard.AspectDashboard
 import org.aioncyclus.aiongraphos.ui.components.chart.Chart
 import org.aioncyclus.aiongraphos.ui.components.navigation.NavigationBar
 import org.aioncyclus.aiongraphos.ui.components.planetdashboard.PlanetDashboard
+import java.time.Duration
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 @ExperimentalMaterial3Api
 @Composable
@@ -136,8 +143,6 @@ fun ChartScreen(
     onPlanetClick: (Planet) -> Unit,
     onSettingsClick: () -> Unit,
     onRefresh: () -> Unit) {
-    /*val configuration = LocalConfiguration.current
-    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE*/
 
     if (state.isLoading) {
         Box(
@@ -165,7 +170,23 @@ fun ChartScreen(
         }
     }
     else if (state.planetDashboardUIState != null && state.chartUIState!=null) {
-        val dashboardColumns = /*if (isLandscape) 5 else*/ 2
+        val dashboardColumns = 2
+        var chartAge by remember { mutableStateOf(Duration.ZERO) }
+
+        LaunchedEffect(state.chartInstant) {
+            while (true) {
+                val remaining = Duration.between(
+                    Instant.now(),
+                    state.chartInstant.plus(30, ChronoUnit.MINUTES)
+                )
+                chartAge = Duration.between(state.chartInstant, Instant.now())
+                if (remaining.isZero || remaining.isNegative) {
+                    onRefresh()
+                    break
+                }
+                delay(minOf(remaining.toMillis(), 60000))
+            }
+        }
 
         Scaffold(
             topBar = {
@@ -179,10 +200,7 @@ fun ChartScreen(
 
             PullToRefreshBox(
                 isRefreshing = state.isRefreshing,
-                onRefresh = {
-                    println("PULL TO REFRESH FIRED")
-                    onRefresh()
-                },
+                onRefresh = {onRefresh()},
                 state = pullToRefreshState,
                 indicator = @Composable {
                     Indicator(
@@ -213,6 +231,26 @@ fun ChartScreen(
                                 .fillParentMaxHeight()
                                 .fillMaxWidth()
                         ) {
+                            Row(modifier= Modifier
+                                .weight(0.1F))
+                            {
+                                val ageMinutes = chartAge.toMinutes()
+                                if(ageMinutes >= 1)
+                                {
+                                    Spacer(Modifier.width(20.dp))
+                                    Icon(
+                                        imageVector = Icons.Default.Refresh,
+                                        tint = MaterialTheme.colorScheme.tertiary,
+                                        contentDescription = null
+                                    )
+                                    Spacer(Modifier.width(4.dp))
+                                    Text(text =when {
+                                        ageMinutes < 60 -> "$ageMinutes MIN"
+                                        else -> "${chartAge.toHours()} HR"
+                                    })
+                                }
+                            }
+
                             Chart(
                                 chartUIState = state.chartUIState,
                                 modifier = Modifier
