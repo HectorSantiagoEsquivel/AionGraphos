@@ -7,6 +7,7 @@ data class MainScreenUIState(
     val planetDashboardUIState: PlanetDashboardUIState?=null,
     val chartUIState: ChartUIState?=null,
     val title:String="",
-    val isLoading:Boolean = true,
+    val isLoading:Boolean = false,
+    val isRefreshing: Boolean = false,
     val error: String? = null
 )

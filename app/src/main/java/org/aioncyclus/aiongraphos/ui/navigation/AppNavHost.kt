@@ -1,10 +1,12 @@
+package org.aioncyclus.aiongraphos.ui.navigation
+
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import org.aioncyclus.aiongraphos.domain.model.planet.Planet
-import org.aioncyclus.aiongraphos.ui.navigation.AppScreen
 import org.aioncyclus.aiongraphos.ui.screens.main.MainScreen
 import org.aioncyclus.aiongraphos.ui.screens.planetdetail.PlanetDetailScreen
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -14,7 +16,7 @@ import org.aioncyclus.aiongraphos.ui.screens.planetdetail.PlanetDetaiViewModel
 import org.aioncyclus.aiongraphos.ui.screens.settings.SettingsScreen
 import org.aioncyclus.aiongraphos.ui.screens.settings.SettingsScreenViewModel
 
-
+@ExperimentalMaterial3Api
 @Composable
 fun AppNavHost(
     navController: NavHostController
@@ -35,7 +37,8 @@ fun AppNavHost(
                     navController.navigate(AppScreen.PlanetDetail.planetRoute(planet))
                 },
                 onSettingsClick = { navController.navigate(AppScreen.Settings.route)},
-                onLocationPermissionGranted = vm::load
+                onLocationPermissionGranted = vm::load,
+                onRefresh = {vm.refresh()}
             )
         }
 

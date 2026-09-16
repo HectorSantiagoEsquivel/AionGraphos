@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.aioncyclus.aiongraphos.data.model.ChartSettings
 import org.aioncyclus.aiongraphos.data.repository.ChartRepository
@@ -53,40 +54,69 @@ class MainScreenViewModel @Inject constructor(
                 isLoading=true,
                 error=null
             )
-            val location = locationRepository.getCurrentLocation()?:
-            locationRepository.useCurrentLocation()
+            loadCurrentChart()
+            state=state.copy(
+                isLoading = false
+            )
+        }
+    }
 
-            val settings=settingsRepository.loadSettings()
+    fun refresh()
+    {
+        viewModelScope.launch {
+            state=state.copy(
+                isRefreshing = true,
+                error=null
+            )
+            val start = System.currentTimeMillis()
 
-            if(location!=null)
-            {
-                val chartContext=
-                    ChartContext(Instant.now(), location)
-                val chart=chartRepository.refresh(
-                    settings.planets,
-                    settings.lots,
-                    chartContext,
-                    settings.dignitySystemType.getDignitySystem(),
-                    settings.isTrueNode,
-                    settings.houseSystem)
-                val planetDashBoardUIState=buildPlanetDashBoardUIState(chart)
-                val chartUIState=buildChartUIState(chart)
-                state = MainScreenUIState(
-                    planetDashboardUIState= planetDashBoardUIState,
-                    chartUIState=chartUIState,
-                    title = location.name,
-                    isLoading = false,
-                    error = null)
+            loadCurrentChart()
+
+            val elapsed = System.currentTimeMillis() - start
+            val remaining = 500L - elapsed
+
+            if (remaining > 0) {
+                delay(remaining)
             }
-            else
-            {
-                //TODO write more specific errors.
-                state=state.copy(
-                    isLoading=false,
-                    error="Couldn't load current location\n" +
-                            "Please make sure to activate your system's location and try again"
-                )
-            }
+            state=state.copy(
+                isRefreshing = false
+            )
+        }
+
+    }
+
+    private suspend fun loadCurrentChart()
+    {
+        val location = locationRepository.getCurrentLocation()?:
+        locationRepository.useCurrentLocation()
+        val settings=settingsRepository.loadSettings()
+
+        if(location!=null)
+        {
+            val chartContext=
+                ChartContext(Instant.now(), location)
+            val chart=chartRepository.refresh(
+                settings.planets,
+                settings.lots,
+                chartContext,
+                settings.dignitySystemType.getDignitySystem(),
+                settings.isTrueNode,
+                settings.houseSystem)
+            val planetDashBoardUIState=buildPlanetDashBoardUIState(chart)
+            val chartUIState=buildChartUIState(chart)
+            state = state.copy(
+                planetDashboardUIState= planetDashBoardUIState,
+                chartUIState=chartUIState,
+                title = location.name,
+                error = null)
+        }
+        else
+        {
+            //TODO write more specific errors.
+            state=state.copy(
+                error="Couldn't load current location\n" +
+                        "Please make sure to activate your system's location and try again"
+            )
         }
     }
 
