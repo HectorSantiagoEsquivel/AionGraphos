@@ -62,6 +62,5 @@ object TraditionalRulerships: RulershipSystem {
             domiciles = emptyList(),
             exaltation = Sign.SAGITTARIUS
         )
-
     )
 }

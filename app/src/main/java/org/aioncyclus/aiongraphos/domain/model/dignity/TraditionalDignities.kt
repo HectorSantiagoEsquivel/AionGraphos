@@ -22,7 +22,7 @@ import org.aioncyclus.aiongraphos.domain.model.zodiac.triplicity.DorotheanTripli
 
 //TODO:
 // - introduce granularity to the returned condition score
-class TraditionalDignities: DignitySystem {
+class TraditionalDignities : DignitySystem {
 
     override fun evaluateCondition(
         planet: Planet,
@@ -32,131 +32,163 @@ class TraditionalDignities: DignitySystem {
     ): Condition {
         val planetData = astroChart.getPlanetData(planet)
         val sunData = astroChart.getPlanetData(Planet.SUN)
-        val housesData= astroChart.housesData
-        val essentialCondition = calculateEssentialCondition(planetData,sect)
-        val accidentalCondition=calculateAccidentalCondition(planetData,sunData,housesData,aspects)
-        val totalConditon=essentialCondition.add(accidentalCondition)
-        return totalConditon
+        val housesData = astroChart.housesData
+        val essentialCondition = calculateEssentialCondition(planetData, sect, astroChart)
+        val accidentalCondition =
+            calculateAccidentalCondition(planetData, sunData, housesData, aspects)
+        val totalCondition = essentialCondition.add(accidentalCondition)
+        return totalCondition
     }
 
-    fun essentialRulershipsOf(
-        planet: Planet
-    ): EssentialRulerships {
+    fun essentialRulershipsOf(planet: Planet): EssentialRulerships {
         return TraditionalRulerships.of(planet)
     }
 
+    fun domicileRulerOf(sign: Sign): Planet? {
+        return TraditionalRulerships.domicileRulerOf(sign)
+    }
+
+    fun exaltationRulerOF(sign: Sign): Planet? {
+        return TraditionalRulerships.exaltationRulerOf(sign)
+    }
+
     fun triplicityRulerOf(element: Element, sect: Sect): Planet {
-        return DorotheanTriplicity.rulerOf(element,sect)
+        return DorotheanTriplicity.rulerOf(element, sect)
     }
 
-    fun termRulerOf(sign: Sign, degree: Int): Planet?
-    {
-        return PtolemaicTerms.rulerOf(sign,degree)
+    fun termRulerOf(sign: Sign, degree: Int): Planet? {
+        return PtolemaicTerms.rulerOf(sign, degree)
     }
 
-    private fun isInTriplicity(planetData: PlanetData, sect: Sect): Boolean
-    {
+    private fun isInTriplicity(planetData: PlanetData, sect: Sect): Boolean {
         val signElement = planetData.zodiacPosition.sign.element
-        return planetData.planet == triplicityRulerOf(signElement,sect)
-    }
-    private fun isInTerm(planetData: PlanetData): Boolean
-    {
-        return planetData.planet == termRulerOf(planetData.zodiacPosition.sign,planetData.zodiacPosition.degreeInSign)
+        return planetData.planet == triplicityRulerOf(signElement, sect)
     }
 
-    fun isInDomicile(planetData: PlanetData): Boolean
-    {
+    private fun isInTerm(planetData: PlanetData): Boolean {
+        return planetData.planet == termRulerOf(
+            planetData.zodiacPosition.sign,
+            planetData.zodiacPosition.degreeInSign
+        )
+    }
+
+    fun isInDomicile(planetData: PlanetData): Boolean {
         return essentialRulershipsOf(planetData.planet).domiciles.contains(planetData.zodiacPosition.sign)
     }
 
-    fun isInExaltation(planetData: PlanetData): Boolean
-    {
-        return essentialRulershipsOf(planetData.planet).exaltation==planetData.zodiacPosition.sign
+    fun isInExaltation(planetData: PlanetData): Boolean {
+        return essentialRulershipsOf(planetData.planet).exaltation == planetData.zodiacPosition.sign
     }
 
-    fun isInDecan(planetData: PlanetData): Boolean
-    {
+    fun isInMutualReceptionByDomicile(
+        currentPlanetData: PlanetData,
+        astroChart: AstroChart
+    ): Boolean {
+        val hostPlanet = domicileRulerOf(currentPlanetData.zodiacPosition.sign)
+        if (hostPlanet != null) {
+            val hostPlanetData = astroChart.getPlanetData(hostPlanet)
+            if ((essentialRulershipsOf(hostPlanet).domiciles
+                    .contains(currentPlanetData.zodiacPosition.sign)
+                        &&
+                        essentialRulershipsOf(currentPlanetData.planet).domiciles
+                            .contains(hostPlanetData.zodiacPosition.sign))
+            ) {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun isInMutualReceptionByExaltation(
+        currentPlanetData: PlanetData,
+        astroChart: AstroChart
+    ): Boolean {
+        val hostPlanet = exaltationRulerOF(currentPlanetData.zodiacPosition.sign)
+        if (hostPlanet != null) {
+            val hostPlanetData = astroChart.getPlanetData(hostPlanet)
+            if ((essentialRulershipsOf(hostPlanet).exaltation == currentPlanetData.zodiacPosition.sign
+                        &&
+                        essentialRulershipsOf(currentPlanetData.planet).exaltation == hostPlanetData.zodiacPosition.sign)
+            ) {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun isInDecan(planetData: PlanetData): Boolean {
         return planetData.zodiacPosition.decan.ruler == planetData.planet
     }
 
-    fun isInExile(planetData: PlanetData): Boolean
-    {
+    fun isInExile(planetData: PlanetData): Boolean {
         return exileOf(planetData.planet).contains(planetData.zodiacPosition.sign)
     }
 
-    fun isInFall(planetData: PlanetData): Boolean
-    {
-        return fallOf(planetData.planet)==planetData.zodiacPosition.sign
+    fun isInFall(planetData: PlanetData): Boolean {
+        return fallOf(planetData.planet) == planetData.zodiacPosition.sign
     }
 
+    fun fallOf(planet: Planet): Sign? = essentialRulershipsOf(planet).exaltation?.opposite()
+    fun exileOf(planet: Planet): List<Sign> =
+        essentialRulershipsOf(planet).domiciles.map { it.opposite() }
 
-    fun fallOf(planet: Planet): Sign?= essentialRulershipsOf(planet).exaltation?.opposite()
-    fun exileOf(planet: Planet): List<Sign> = essentialRulershipsOf(planet).domiciles.map { it.opposite() }
 
-    //TODO:
-    // - mutual reception
-    fun calculateEssentialCondition(planetData: PlanetData, sect: Sect): Condition
-    {
+    fun calculateEssentialCondition(
+        planetData: PlanetData,
+        sect: Sect,
+        astroChart: AstroChart
+    ): Condition {
         var conditionScore = 0
         var hasEssentialDignity = false
 
-        if(isInDomicile(planetData))
-        {
+        if (isInDomicile(planetData) || isInMutualReceptionByDomicile(planetData, astroChart)) {
             conditionScore += 5
             hasEssentialDignity = true
-        }
-        else if(isInExaltation(planetData))
-        {
+        } else if (isInExaltation(planetData) || isInMutualReceptionByExaltation(
+                planetData,
+                astroChart
+            )
+        ) {
             conditionScore += 4
             hasEssentialDignity = true
-        }
-        else if(isInExile(planetData))
-        {
+        } else if (isInExile(planetData)) {
             conditionScore += -5
             hasEssentialDignity = true
-        }
-        else if(isInFall(planetData))
-        {
+        } else if (isInFall(planetData)) {
             conditionScore += -4
             hasEssentialDignity = true
         }
 
-        if(isInTriplicity(planetData,sect))
-        {
+        if (isInTriplicity(planetData, sect)) {
             conditionScore += 3
             hasEssentialDignity = true
         }
-        if(isInTerm(planetData))
-        {
+        if (isInTerm(planetData)) {
             conditionScore += 2
             hasEssentialDignity = true
         }
-        if(isInDecan(planetData))
-        {
+        if (isInDecan(planetData)) {
             conditionScore += 1
             hasEssentialDignity = true
         }
 
-        if(hasEssentialDignity != true)
-        {
+        if (!hasEssentialDignity) {
             conditionScore += -5
         }
 
-        return Condition(planetData.planet,conditionScore)
+        return Condition(planetData.planet, conditionScore)
     }
 
     //TODO:
     // - besiegement(need applyingTo and separatingFrom functions)
-    // - test if scoring system is ok
 
     fun isConjunctToStar(
         planetData: PlanetData,
         star: FixedStar,
         orb: Double = 1.0
-    ): Boolean
-    {
-        return planetData.planetPosition.longitude>=star.longitude-orb
-            && planetData.planetPosition.longitude<=star.longitude+orb
+    ): Boolean {
+        return planetData.planetPosition.longitude >= star.longitude - orb
+                && planetData.planetPosition.longitude <= star.longitude + orb
     }
 
     fun isOriental(
@@ -167,7 +199,8 @@ class TraditionalDignities: DignitySystem {
         val distance =
             ZodiacMapper.normaliseLongitude(
                 planetData.planetPosition.longitude
-                        - sunData.planetPosition.longitude)
+                        - sunData.planetPosition.longitude
+            )
 
         return distance < 180.0
     }
@@ -179,68 +212,62 @@ class TraditionalDignities: DignitySystem {
         return !isOriental(planetData, sunData)
     }
 
-    fun calculateAccidentalCondition(planetData: PlanetData,
-                                 sunData: PlanetData,
-                                 housesData: HousesData,
-                                 aspects: List<Aspect>): Condition
-    {
+    fun calculateAccidentalCondition(
+        planetData: PlanetData,
+        sunData: PlanetData,
+        housesData: HousesData,
+        aspects: List<Aspect>
+    ): Condition {
         var conditionScore = 0
 
-        conditionScore+= checkHouseScore(housesData,planetData)
-        conditionScore+= checkRetrogradationScore(planetData)
-        conditionScore+= checkMotionSpeed(planetData)
-        if(planetData.planet== Planet.MOON)
-        {
-            conditionScore+=checkLunarPhase(planetData,sunData)
+        conditionScore += checkHouseScore(housesData, planetData)
+        conditionScore += checkRetrogradationScore(planetData)
+        conditionScore += checkMotionSpeed(planetData)
+        if (planetData.planet == Planet.MOON) {
+            conditionScore += checkLunarPhase(planetData, sunData)
         }
-        if(planetData.planet!=Planet.SUN)
-        {
-            conditionScore+=checkCombustStatus(planetData,sunData)
+        if (planetData.planet != Planet.SUN) {
+            conditionScore += checkCombustStatus(planetData, sunData)
         }
-        conditionScore+=checkSolarPhase(planetData,sunData)
-        conditionScore+=checkNodeConjunction(planetData.planet,aspects)
-        conditionScore+=checkBeneficConjunction(planetData.planet,aspects)
-        conditionScore+=checkBeneficTrine(planetData.planet,aspects)
-        conditionScore+=checkBeneficSextile(planetData.planet,aspects)
-        conditionScore+=checkMaleficcConjunction(planetData.planet,aspects)
-        conditionScore+=checkMaleficOpposition(planetData.planet,aspects)
-        conditionScore+=checkMaleficSquare(planetData.planet,aspects)
+        conditionScore += checkSolarPhase(planetData, sunData)
+        conditionScore += checkNodeConjunction(planetData.planet, aspects)
+        conditionScore += checkBeneficConjunction(planetData.planet, aspects)
+        conditionScore += checkBeneficTrine(planetData.planet, aspects)
+        conditionScore += checkBeneficSextile(planetData.planet, aspects)
+        conditionScore += checkMaleficConjunction(planetData.planet, aspects)
+        conditionScore += checkMaleficOpposition(planetData.planet, aspects)
+        conditionScore += checkMaleficSquare(planetData.planet, aspects)
 
-        when
-        {
-            isConjunctToStar(planetData, FixedStar.REGULUS)-> conditionScore += 6
-            isConjunctToStar(planetData, FixedStar.SPICA)-> conditionScore += 5
-            isConjunctToStar(planetData, FixedStar.ALGOL)-> conditionScore+= -4
+        when {
+            isConjunctToStar(planetData, FixedStar.REGULUS) -> conditionScore += 6
+            isConjunctToStar(planetData, FixedStar.SPICA) -> conditionScore += 5
+            isConjunctToStar(planetData, FixedStar.ALGOL) -> conditionScore += -4
         }
 
-        return Condition(planetData.planet,conditionScore)
+        return Condition(planetData.planet, conditionScore)
     }
 
-    fun checkHouseScore(houses: HousesData, planetData: PlanetData): Int
-    {
-        val planetLongitude= planetData.planetPosition.longitude
-        val currentHouse= HousesCalculator.locateHouseOf(planetLongitude,houses)
+    fun checkHouseScore(houses: HousesData, planetData: PlanetData): Int {
+        val planetLongitude = planetData.planetPosition.longitude
+        val currentHouse = HousesCalculator.locateHouseOf(planetLongitude, houses)
 
         return when (currentHouse.number) {
-            10,1 -> 5
-            7,4,11 -> 4
-            2,5 -> 3
+            10, 1 -> 5
+            7, 4, 11 -> 4
+            2, 5 -> 3
             9 -> 2
             3 -> 1
+            8, 6 -> -2
             12 -> -5
-            8,6 -> -2
             else -> 0
         }
     }
 
-    fun checkRetrogradationScore(planetData: PlanetData): Int
-    {
-        if(planetData.planet == Planet.MOON || planetData.planet == Planet.SUN)
-        {
+    fun checkRetrogradationScore(planetData: PlanetData): Int {
+        if (planetData.planet == Planet.MOON || planetData.planet == Planet.SUN) {
             return 0
         }
-        return when(planetData.isRetrograde)
-        {
+        return when (planetData.isRetrograde) {
             false -> 4
             true -> -5
         }
@@ -248,23 +275,21 @@ class TraditionalDignities: DignitySystem {
 
 
     fun checkMotionSpeed(planetData: PlanetData): Int {
-        var planetSpeed=planetData.planetPosition.speedLongitude
+        var planetSpeed = planetData.planetPosition.speedLongitude
         if (planetSpeed < 0) {
             planetSpeed *= -1
         }
         return when {
             planetSpeed > planetData.planet.meanSpeed -> 2
-            planetSpeed < planetData.planet.meanSpeed  -> -2
+            planetSpeed < planetData.planet.meanSpeed -> -2
             else -> 0
         }
     }
 
-    fun checkLunarPhase(moonData: PlanetData,sunData: PlanetData):Int
-    {
-        return when
-        {
-            LuminaryCalculator.isWaxing(moonData,sunData)-> 2
-            LuminaryCalculator.isWaning(moonData,sunData)-> -2
+    fun checkLunarPhase(moonData: PlanetData, sunData: PlanetData): Int {
+        return when {
+            LuminaryCalculator.isWaxing(moonData, sunData) -> 2
+            LuminaryCalculator.isWaning(moonData, sunData) -> -2
             else -> 0
         }
     }
@@ -287,111 +312,104 @@ class TraditionalDignities: DignitySystem {
         }
     }
 
-    fun checkSolarPhase(planetData: PlanetData,sunData: PlanetData): Int
-    {
-        val planet=planetData.planet
-        return when
-        {
-            (planet== Planet.VENUS || planet== Planet.MERCURY)
-                    && isOccidental(planetData,sunData) -> 2
-            (planet== Planet.VENUS || planet== Planet.MERCURY)
-                    && isOriental(planetData,sunData) -> -2
-            (planet== Planet.SATURN || planet== Planet.JUPITER || planet== Planet.MARS)
-                    && isOriental(planetData,sunData) -> 2
-            (planet== Planet.SATURN || planet== Planet.JUPITER || planet== Planet.MARS)
-                    && isOccidental(planetData,sunData) -> -2
+    fun checkSolarPhase(planetData: PlanetData, sunData: PlanetData): Int {
+        val planet = planetData.planet
+        return when {
+            (planet == Planet.VENUS || planet == Planet.MERCURY)
+                    && isOccidental(planetData, sunData) -> 2
+
+            (planet == Planet.VENUS || planet == Planet.MERCURY)
+                    && isOriental(planetData, sunData) -> -2
+
+            (planet == Planet.SATURN || planet == Planet.JUPITER || planet == Planet.MARS)
+                    && isOriental(planetData, sunData) -> 2
+
+            (planet == Planet.SATURN || planet == Planet.JUPITER || planet == Planet.MARS)
+                    && isOccidental(planetData, sunData) -> -2
+
             else -> 0
         }
     }
 
-    fun checkNodeConjunction(planet: Planet, aspects: List<Aspect>): Int
-    {
-        val northNodes=listOf<Planet>(Planet.TRUE_NORTH_NODE,Planet.MEAN_NORTH_NODE)
-        val southNodes=listOf<Planet>(Planet.TRUE_SOUTH_NODE,Planet.MEAN_SOUTH_NODE)
-        val northAspect= AspectCalculator.findAspectTo(planet,northNodes, AspectType.CONJUNCTION,aspects)
-        val southAspect= AspectCalculator.findAspectTo(planet,southNodes, AspectType.CONJUNCTION,aspects)
-        if(northAspect?.separation?.degree==0)
-        {
+    fun checkNodeConjunction(planet: Planet, aspects: List<Aspect>): Int {
+        val northNodes = listOf<Planet>(Planet.TRUE_NORTH_NODE, Planet.MEAN_NORTH_NODE)
+        val southNodes = listOf<Planet>(Planet.TRUE_SOUTH_NODE, Planet.MEAN_SOUTH_NODE)
+        val northAspect =
+            AspectCalculator.findAspectTo(planet, northNodes, AspectType.CONJUNCTION, aspects)
+        val southAspect =
+            AspectCalculator.findAspectTo(planet, southNodes, AspectType.CONJUNCTION, aspects)
+        if (northAspect?.separation?.degree == 0) {
             return 4
-        }
-        else if(southAspect?.separation?.degree==0)
-        {
+        } else if (southAspect?.separation?.degree == 0) {
             return -4
         }
         return 0
     }
 
-    fun checkBeneficConjunction(planet:Planet,aspects: List<Aspect>): Int
-    {
-        val benefics=listOf<Planet>(Planet.VENUS,Planet.JUPITER)
-        val beneficAspect= AspectCalculator.findAspectTo(planet,benefics, AspectType.CONJUNCTION,aspects)
+    fun checkBeneficConjunction(planet: Planet, aspects: List<Aspect>): Int {
+        val benefics = listOf<Planet>(Planet.VENUS, Planet.JUPITER)
+        val beneficAspect =
+            AspectCalculator.findAspectTo(planet, benefics, AspectType.CONJUNCTION, aspects)
 
-        if(beneficAspect?.separation?.degree==0)
-        {
+        if (beneficAspect?.separation?.degree == 0) {
             return 5
         }
         return 0
     }
 
-    fun checkBeneficTrine(planet:Planet,aspects: List<Aspect>): Int
-    {
-        val benefics=listOf<Planet>(Planet.VENUS,Planet.JUPITER)
-        val beneficAspect= AspectCalculator.findAspectTo(planet,benefics, AspectType.TRINE,aspects)
+    fun checkBeneficTrine(planet: Planet, aspects: List<Aspect>): Int {
+        val benefics = listOf<Planet>(Planet.VENUS, Planet.JUPITER)
+        val beneficAspect =
+            AspectCalculator.findAspectTo(planet, benefics, AspectType.TRINE, aspects)
 
-        if(beneficAspect?.separation?.degree==0)
-        {
+        if (beneficAspect?.separation?.degree == 0) {
             return 4
         }
         return 0
     }
 
-    fun checkBeneficSextile(planet:Planet,aspects: List<Aspect>): Int
-    {
-        val benefics=listOf<Planet>(Planet.VENUS,Planet.JUPITER)
-        val beneficAspect= AspectCalculator.findAspectTo(planet,benefics, AspectType.SEXTILE,aspects)
+    fun checkBeneficSextile(planet: Planet, aspects: List<Aspect>): Int {
+        val benefics = listOf<Planet>(Planet.VENUS, Planet.JUPITER)
+        val beneficAspect =
+            AspectCalculator.findAspectTo(planet, benefics, AspectType.SEXTILE, aspects)
 
-        if(beneficAspect?.separation?.degree==0)
-        {
+        if (beneficAspect?.separation?.degree == 0) {
             return 3
         }
         return 0
     }
 
-    fun checkMaleficcConjunction(planet:Planet,aspects: List<Aspect>): Int
-    {
-        val malefics=listOf<Planet>(Planet.MARS,Planet.SATURN)
-        val maleficAspect= AspectCalculator.findAspectTo(planet,malefics, AspectType.CONJUNCTION,aspects)
+    fun checkMaleficConjunction(planet: Planet, aspects: List<Aspect>): Int {
+        val malefics = listOf<Planet>(Planet.MARS, Planet.SATURN)
+        val maleficAspect =
+            AspectCalculator.findAspectTo(planet, malefics, AspectType.CONJUNCTION, aspects)
 
-        if(maleficAspect?.separation?.degree==0)
-        {
+        if (maleficAspect?.separation?.degree == 0) {
             return -5
         }
         return 0
     }
 
-    fun checkMaleficOpposition(planet: Planet,aspects: List<Aspect>):Int
-    {
-        val malefics=listOf<Planet>(Planet.MARS,Planet.SATURN)
-        val maleficAspect= AspectCalculator.findAspectTo(planet,malefics, AspectType.OPPOSITION,aspects)
+    fun checkMaleficOpposition(planet: Planet, aspects: List<Aspect>): Int {
+        val malefics = listOf<Planet>(Planet.MARS, Planet.SATURN)
+        val maleficAspect =
+            AspectCalculator.findAspectTo(planet, malefics, AspectType.OPPOSITION, aspects)
 
-        if(maleficAspect?.separation?.degree==0)
-        {
+        if (maleficAspect?.separation?.degree == 0) {
             return -4
         }
         return 0
     }
 
-    fun checkMaleficSquare(planet: Planet,aspects: List<Aspect>):Int
-    {
-        val malefics=listOf<Planet>(Planet.MARS,Planet.SATURN)
-        val maleficAspect= AspectCalculator.findAspectTo(planet,malefics, AspectType.SQUARE,aspects)
+    fun checkMaleficSquare(planet: Planet, aspects: List<Aspect>): Int {
+        val malefics = listOf<Planet>(Planet.MARS, Planet.SATURN)
+        val maleficAspect =
+            AspectCalculator.findAspectTo(planet, malefics, AspectType.SQUARE, aspects)
 
-        if(maleficAspect?.separation?.degree==0)
-        {
+        if (maleficAspect?.separation?.degree == 0) {
             return -4
         }
         return 0
     }
-
 
 }
