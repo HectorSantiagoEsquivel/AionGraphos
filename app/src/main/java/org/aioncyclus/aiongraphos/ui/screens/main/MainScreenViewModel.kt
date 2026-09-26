@@ -87,8 +87,8 @@ class MainScreenViewModel @Inject constructor(
 
     private suspend fun loadCurrentChart()
     {
-        val location = locationRepository.getCurrentLocation()?:
-        locationRepository.useCurrentLocation()
+        val location = locationRepository.useCurrentLocation()?:
+        locationRepository.getCurrentLocation()
         val settings=settingsRepository.loadSettings()
 
         if(location!=null)

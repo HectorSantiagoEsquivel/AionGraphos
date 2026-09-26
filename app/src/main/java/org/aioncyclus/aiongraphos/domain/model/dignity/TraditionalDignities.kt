@@ -144,10 +144,7 @@ class TraditionalDignities : DignitySystem {
         if (isInDomicile(planetData) || isInMutualReceptionByDomicile(planetData, astroChart)) {
             conditionScore += 5
             hasEssentialDignity = true
-        } else if (isInExaltation(planetData) || isInMutualReceptionByExaltation(
-                planetData,
-                astroChart
-            )
+        } else if (isInExaltation(planetData) || isInMutualReceptionByExaltation(planetData, astroChart)
         ) {
             conditionScore += 4
             hasEssentialDignity = true
@@ -203,13 +200,6 @@ class TraditionalDignities : DignitySystem {
             )
 
         return distance < 180.0
-    }
-
-    fun isOccidental(
-        planetData: PlanetData,
-        sunData: PlanetData
-    ): Boolean {
-        return !isOriental(planetData, sunData)
     }
 
     fun calculateAccidentalCondition(
@@ -313,20 +303,11 @@ class TraditionalDignities : DignitySystem {
     }
 
     fun checkSolarPhase(planetData: PlanetData, sunData: PlanetData): Int {
-        val planet = planetData.planet
-        return when {
-            (planet == Planet.VENUS || planet == Planet.MERCURY)
-                    && isOccidental(planetData, sunData) -> 2
-
-            (planet == Planet.VENUS || planet == Planet.MERCURY)
-                    && isOriental(planetData, sunData) -> -2
-
-            (planet == Planet.SATURN || planet == Planet.JUPITER || planet == Planet.MARS)
-                    && isOriental(planetData, sunData) -> 2
-
-            (planet == Planet.SATURN || planet == Planet.JUPITER || planet == Planet.MARS)
-                    && isOccidental(planetData, sunData) -> -2
-
+        return when(planetData.planet) {
+            Planet.VENUS, Planet.MERCURY ->
+                    if (isOriental(planetData,sunData)) -2 else 2
+            Planet.SATURN, Planet.JUPITER, Planet.MARS ->
+                    if (isOriental(planetData,sunData)) 2 else -2
             else -> 0
         }
     }

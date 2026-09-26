@@ -48,19 +48,19 @@ object TraditionalRulerships: RulershipSystem {
         ),
         Planet.MEAN_NORTH_NODE to EssentialRulerships(
             domiciles = emptyList(),
-            exaltation = Sign.GEMINI
+            exaltation = null //SET TO NULL TO PREVENT CRASH, ACTUAL EXALTATION IS GEMINI
         ),
         Planet.TRUE_NORTH_NODE to EssentialRulerships(
             domiciles = emptyList(),
-            exaltation = Sign.GEMINI
+            exaltation = null //SET TO NULL TO PREVENT CRASH, ACTUAL EXALTATION IS GEMINI
         ),
         Planet.MEAN_SOUTH_NODE to EssentialRulerships(
             domiciles = emptyList(),
-            exaltation = Sign.SAGITTARIUS
+            exaltation = null //SET TO NULL TO PREVENT CRASH, ACTUAL EXALTATION IS SAGITTARIUS
         ),
         Planet.TRUE_SOUTH_NODE to EssentialRulerships(
             domiciles = emptyList(),
-            exaltation = Sign.SAGITTARIUS
+            exaltation = null //SET TO NULL TO PREVENT CRASH, ACTUAL EXALTATION IS SAGITTARIUS
         )
     )
 }

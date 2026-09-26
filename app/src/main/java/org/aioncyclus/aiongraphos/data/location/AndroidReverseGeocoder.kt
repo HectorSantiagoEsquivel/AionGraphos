@@ -40,13 +40,12 @@ class AndroidReverseGeocoder @Inject constructor(
 
     private fun Address.toLocationName(): String? {
         val locale = listOfNotNull(
-            locality,
             subAdminArea,
             adminArea,
             countryName
         )
         return locale
-            .take(2)
+            .take(1)
             .joinToString(", ")
             .ifBlank { null }
     }
