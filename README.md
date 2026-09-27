@@ -1,6 +1,17 @@
-# Aiongraphos
+<div align="center">
+    <img width="200" height="200" alt="Aiongraphos" src="https://github.com/user-attachments/assets/aa46be0b-3df2-4452-afa6-6eb9c14d92cf" />
+    <h1>Aiongraphos</h1>
+    <p>A minimalist astrology app</p>
+</div>
 
-**A minimalist astrology app**
+---
+
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/9050a6e2-25da-4d60-bd38-5ca487f71466" width="30%" alt="Chart screen" />
+  <img src="https://github.com/user-attachments/assets/f93d352d-424f-4415-a37f-a5d7b060dcf9" width="30%" alt="Planetary details screen" /> 
+  <img src="https://github.com/user-attachments/assets/be49dfde-6783-4da9-891d-efb6f5b1db13" width="30%" alt="Settings screen" /> 
+</p>
 
 Aiongraphos is an Android application that calculates and displays current astrological transits without requiring a natal chart, an account, or an internet connection.
 
@@ -27,13 +38,6 @@ Aiongraphos displays:
 
 The application supports both **traditional and modern planetary configurations**, allowing the amount of information shown to be adjusted to different approaches to astrology.
 
-## Screenshots
-## Screenshots
-
-| Chart | Planetary details | Settings |
-| :---: | :---: | :---: |
-| <img src="https://github.com/user-attachments/assets/9050a6e2-25da-4d60-bd38-5ca487f71466" width="220" alt="Chart screen" /> | <img src="https://github.com/user-attachments/assets/f93d352d-424f-4415-a37f-a5d7b060dcf9" width="220" alt="Planetary details screen" /> | <img src="https://github.com/user-attachments/assets/be49dfde-6783-4da9-891d-efb6f5b1db13" width="220" alt="Settings screen" /> |
-
 ## Designed to feel like an instrument
 
 Aiongraphos was designed as a simple tool for astrologers, beginner and advanced, who may want to consult the current state of the sky on the go. As such Aiongraphos deliberately avoids loaded visual language and noise.
@@ -49,6 +53,15 @@ Aiongraphos follows an ethos of maximising the independence and autonomy of the 
 Aiongraphos does **not** require a server to generate a chart, and its core chart calculation does not depend on an online astrology API.
 
 As a result the application can continue to calculate charts without an internet connection.
+
+
+# Release
+
+[<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png"
+alt="Get it on GitHub"
+height="80"
+align="center">](https://github.com/HectorSantiagoEsquivel/AionGraphos/releases/latest)
+
 
 ## Engineering
 
