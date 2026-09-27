@@ -54,6 +54,15 @@ Aiongraphos does **not** require a server to generate a chart, and its core char
 
 As a result the application can continue to calculate charts without an internet connection.
 
+
+# Release
+
+[<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png"
+alt="Get it on GitHub"
+height="80"
+align="center">](https://github.com/HectorSantiagoEsquivel/AionGraphos/releases/latest)
+
+
 ## Engineering
 
 Aiongraphos is a software engineering project designed and built from the ground up in Kotlin.
