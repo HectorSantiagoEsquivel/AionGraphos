@@ -38,7 +38,7 @@ class SettingsRepository @Inject constructor(
             currentSettings = settings
             return settings
         }
-        catch(e: SerializationException) {
+        catch(e: Exception) {
             val jsonString = context.assets
                 .open("settings/chart_settings.json")
                 .bufferedReader()
