@@ -1,0 +1,22 @@
+{
+  "planets": [
+    "MOON",
+    "MERCURY",
+    "VENUS",
+    "SUN",
+    "MARS",
+    "JUPITER",
+    "SATURN",
+    "URANUS",
+    "NEPTUNE",
+    "PLUTO"
+  ],
+  "lots": [
+    "fortune",
+    "basis"
+  ],
+  "houseSystem": "WHOLE",
+  "isTrueNode": false,
+  "dignitySystemType": "TRADITIONAL"
+}
+

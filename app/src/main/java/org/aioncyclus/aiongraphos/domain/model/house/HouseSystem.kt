@@ -16,5 +16,7 @@ enum class HouseSystem(
 {
     WHOLE(SweConst.SE_HSYS_WHOLE_SIGN, "Whole Sign"),
     PLACIDUS(SweConst.SE_HSYS_PLACIDUS, "Placidus"),
-    EQUAL(SweConst.SE_HSYS_EQUAL,"Equal Sign")
+    EQUAL(SweConst.SE_HSYS_EQUAL,"Equal House"),
+    REGIOMONTANUS(SweConst.SE_HSYS_REGIOMONTANUS, "Regiomontanus"),
+    Koch(SweConst.SE_HSYS_KOCH,"Koch")
 }

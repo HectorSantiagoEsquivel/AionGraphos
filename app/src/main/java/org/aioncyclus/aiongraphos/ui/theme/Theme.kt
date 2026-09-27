@@ -1,6 +1,6 @@
 package org.aioncyclus.aiongraphos.ui.theme
 
-import android.app.Activity
+
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -12,32 +12,43 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = SolarGold,
+    secondary = LunarIvory,
+    tertiary = MaritimeBlue,
+
+    background = OceanicEbony,
+    surface = LunarIvory.copy(alpha = 0.05F),
+
+    onPrimary = OceanicEbony,
+    onSecondary = OceanicEbony,
+    onTertiary = LunarIvory,
+
+    onBackground = LunarIvory,
+    onSurface = LunarIvory
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = SolarGold,
+    secondary = OceanicEbony,
+    tertiary = MaritimeBlue,
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    background = LunarIvory,
+    surface = SteelBlue.copy(alpha = 0.05F),
+
+    onPrimary = OceanicEbony,
+    onSecondary = LunarIvory,
+    onTertiary = LunarIvory,
+
+    onBackground = SteelBlue,
+    onSurface = OceanicEbony,
+    onSurfaceVariant = MaritimeBlue
 )
 
 @Composable
 fun AiongraphosTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

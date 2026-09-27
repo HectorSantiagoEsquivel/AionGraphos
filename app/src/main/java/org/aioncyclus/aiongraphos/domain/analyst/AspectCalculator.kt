@@ -3,15 +3,16 @@ package org.aioncyclus.aiongraphos.domain.analyst
 import org.aioncyclus.aiongraphos.domain.calculator.ZodiacMapper
 import org.aioncyclus.aiongraphos.domain.model.aspect.Aspect
 import org.aioncyclus.aiongraphos.domain.model.aspect.AspectType
+import org.aioncyclus.aiongraphos.domain.model.planet.Planet
 import org.aioncyclus.aiongraphos.domain.model.planet.PlanetData
-
+//TODO:
+// - This class could be an object
 class AspectCalculator{
 
     fun calculateAspects(planetaryData: List<PlanetData>): List<Aspect>
     {
         val aspects=mutableListOf<Aspect>()
 
-        planetaryData.indices
         for(i in planetaryData.indices)
         {
             for(j in i+1 until planetaryData.size)
@@ -28,39 +29,102 @@ class AspectCalculator{
 
     private fun checkAspectBetween(planetDataA: PlanetData,planetDataB: PlanetData): Aspect?
     {
-        var distance: Double=planetDataA.planetPosition.longitude-planetDataB.planetPosition.longitude
-
-        if (distance<0)
-        {
-            distance *= -1
-        }
-        if(distance>180)
-        {
-            distance=360-distance
-        }
-
-        for(aspectType in AspectType.entries)
-        {
-
-            var aspectOrb=distance-aspectType.angle
-            if(aspectOrb<0)
+        //Here I'm checking whether the aspect is between two nodes, if it is I skip it
+        //The nodes are always locked 180° apart, thus cluttering aspects otherwise.
+        if(!(((planetDataA.planet == Planet.MEAN_NORTH_NODE
+                    ||
+            planetDataA.planet == Planet.TRUE_NORTH_NODE)
+                &&
+            (planetDataB.planet== Planet.MEAN_SOUTH_NODE
+                    ||
+            planetDataB.planet == Planet.TRUE_SOUTH_NODE))
+            ||
+            ((planetDataA.planet == Planet.MEAN_SOUTH_NODE
+                    ||
+            planetDataA.planet == Planet.TRUE_SOUTH_NODE)
+                &&
+            (planetDataB.planet== Planet.MEAN_NORTH_NODE
+                    ||
+            planetDataB.planet == Planet.TRUE_NORTH_NODE))))
             {
-                aspectOrb *= -1
+                val distance=angularDistance(planetDataA.planetPosition.longitude,planetDataB.planetPosition.longitude)
+
+                for(aspectType in AspectType.entries)
+                {
+
+                    var aspectOrb=distance-aspectType.angle
+                    if(aspectOrb<0)
+                    {
+                        aspectOrb *= -1
+                    }
+                    if(aspectOrb<= aspectType.defaultOrb)
+                    {
+                        return Aspect(
+                            planetDataA.planet,
+                            planetDataB.planet,
+                            aspectType,
+                            ZodiacMapper.longitudeToDegrees(aspectOrb)
+                        )
+                    }
+                }
             }
-            if(aspectOrb<= aspectType.defaultOrb)
-            {
-                println("DEBUG distance = $distance")
-                println("DEBUG angle = ${aspectType.angle}")
-                println("DEBUG orb = ${aspectType.defaultOrb}")
-                println("DEBUG orb * 60 = ${aspectOrb * 60}")
-                return Aspect(
-                    planetDataA.planet,
-                    planetDataB.planet,
-                    aspectType,
-                    ZodiacMapper.longitudeToDegrees(aspectOrb)
-                )
-            }
-        }
         return null
+    }
+
+    companion object {
+        fun angularDistance(a: Double, b: Double): Double {
+            var distance = a - b
+
+            if (distance < 0) {
+                distance *= -1
+            }
+            if (distance > 180) {
+                distance = 360 - distance
+            }
+
+            if (distance > 180.0) {
+                distance = 360.0 - distance
+            }
+
+            return distance
+        }
+
+        fun aspectBetween(astroPointA: Planet,astroPointB: Planet, aspects:List<Aspect>)
+        : Aspect?
+        {
+            for(aspect in aspects)
+            {
+                if((aspect.planetA==astroPointA && aspect.planetB==astroPointB)
+                    ||
+                    (aspect.planetB == astroPointA && aspect.planetA==astroPointB))
+                {
+                    return aspect
+                }
+            }
+            return null
+        }
+
+        fun findAspectTo(
+            planet: Planet,
+            targets: List<Planet>,
+            aspectType: AspectType,
+            aspects: List<Aspect>
+        ): Aspect? {
+
+            for (target in targets) {
+
+                val aspect = aspectBetween(
+                        planet,
+                        target,
+                        aspects
+                    )
+
+                if (aspect?.aspectType == aspectType) {
+                    return aspect
+                }
+            }
+
+            return null
+        }
     }
 }

@@ -28,6 +28,14 @@ interface AstroEngine {
                                 contextDate: Instant = Instant.now()
     ): PlanetPosition
 
+    /**
+     * Calculates the cusp of all houses at a given time, longitude, and latitude.
+     *
+     * @param latitude The calculated location's latitudinal coordinates
+     * @param longitude The calculated location's longitudinal coordinates
+     * @contextDate The calculation time (default: now)
+     * @houseSystem The house system used to calculate the cusp of the houses (default:Whole)
+     */
     fun calculateHouses(latitude: Double,
                         longitude: Double,
                         contextDate: Instant = Instant.now(),

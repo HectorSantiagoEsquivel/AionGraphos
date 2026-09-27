@@ -6,9 +6,12 @@ import org.aioncyclus.aiongraphos.domain.model.planet.PlanetData
 
 data class AstroChart(
     val planetaryData: List<PlanetData>,
+    val nodeData: List <PlanetData>,
     val housesData: HousesData,
     val chartContext: ChartContext
 ){
     fun getPlanetData(planet: Planet): PlanetData =
         planetaryData.first { it.planet == planet }
+    fun getNodeDAta(node: Planet): PlanetData=
+        nodeData.first { it.planet==node }
 }

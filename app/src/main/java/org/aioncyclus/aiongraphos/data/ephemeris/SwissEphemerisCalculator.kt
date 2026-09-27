@@ -36,13 +36,14 @@ class SwissEphemerisCalculator(private val swe: SwissEph): AstroEngine
             val julDay = calculateJulianDay(contextDate)
             val planetPos = DoubleArray(6)
             val serr = StringBuffer()
-            val flags = SweConst.SEFLG_SWIEPH
+            val flags = SweConst.SEFLG_SWIEPH or SweConst.SEFLG_SPEED
 
             val result = swe.swe_calc_ut(julDay, planet.seId, flags, planetPos, serr)
 
             if (result == SweConst.ERR) {
                 throw IllegalStateException("Failed to calculate position: $serr")
             }
+
 
             PlanetPosition(planetPos[0], planetPos[1], planetPos[2],
                 planetPos[3], planetPos[4], planetPos[5])
@@ -54,6 +55,23 @@ class SwissEphemerisCalculator(private val swe: SwissEph): AstroEngine
         }
     }
 
+    /**
+     * Calculates the cusp position of houses at a given moment, and according to a geolocation.
+     *
+     * This method queries the Swiss Ephemeris for the houses' cusps geocentric positions,
+     * returning a list of houses' cusps alongside their numbers and zodiac positions.
+     *
+     * @param latitude The calculated location's latitudinal coordinates
+     * @param longitude The calculated location's longitudinal coordinates
+     * @contextDate The calculation time. Defaults to [Instant.now]
+     * @houseSystem The house system used to calculate the cusp of the houses. Defaults to [HouseSystem.WHOLE]
+     * @return A [HousesData] containing a list of individual houses, and angles.
+     *
+     * @throws IllegalStateException If the Swiss Ephemeris calculation fails
+     *
+     * @see HousesData
+     * @see swe_calc_ut
+     */
     override fun calculateHouses(
         latitude: Double,
         longitude: Double,
